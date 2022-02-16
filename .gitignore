@@ -1,0 +1,9 @@
+# For Code Editors
+.vs
+.vscode
+.idea
+
+# For Python Files && Paths
+.pytest_cache
+__pycache__
+.*pyc
