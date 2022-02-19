@@ -9,7 +9,7 @@ class SessionManagerMixin:
     }
 
     def __init__(self) -> None:
-        self.session: requests.Request = requests
+        self.session = requests
         self.session_headers = self.HEADERS
 
     def get(self, url: str, *args, **kwargs) -> requests.Response:

@@ -8,12 +8,3 @@ ms = MeroShare(
     password=config("MEROSHARE_PASSWORD")
 )
 ms.login()
-
-# _vars = vars(ms)
-
-# for k, v in _vars.items():
-#     if type(v) is list:
-#         for d in v:
-#             print(d)
-#     else:
-#         print(k, "::", v)

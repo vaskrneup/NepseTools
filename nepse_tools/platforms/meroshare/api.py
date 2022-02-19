@@ -1,4 +1,6 @@
 from nepse_tools.platforms.manager import PlatformManager
+from nepse_tools.platforms.meroshare.exceptions import MeroshareDataLoadError, MeroshareClientIDNotFoundError, \
+    MeroshareLoginError
 from nepse_tools.utils.session import SessionManagerMixin
 
 
@@ -7,7 +9,7 @@ class MeroShare(PlatformManager, SessionManagerMixin):
 
     # !! AUTH !!
     LOGIN_REQUEST_URL = "https://webbackend.cdsc.com.np/api/meroShare/auth/"
-    LOGOUT_REQUEST_URL = ""
+    LOGOUT_REQUEST_URL = "https://webbackend.cdsc.com.np/api/meroShare/auth/logout/"
     HEADERS = {
         "Connection": "keep-alive",
         "Host": "webbackend.cdsc.com.np",
@@ -38,6 +40,8 @@ class MeroShare(PlatformManager, SessionManagerMixin):
         self.bank_details__my_details: dict = {}
         self.bank_request_data: dict = {}
 
+        self.is_logged_in = False
+
     def hard__load_all_data(self):
         self.load_client_id_data()
         self.load_initial_data__own_data()
@@ -52,8 +56,10 @@ class MeroShare(PlatformManager, SessionManagerMixin):
             self.client_id_data = client_id_data.json()
             return self
         else:
-            # TODO: RAISE ERROR !!
-            return None
+            raise MeroshareDataLoadError(
+                f"[!{client_id_data.status_code}!] Error getting data from URL: "
+                f"'{client_id_data.url}'\n{client_id_data.text}"
+            )
 
     def load_initial_data__own_data(self):
         own_data = self.get(self.INITIAL_DATA__OWN_DATA_URL)
@@ -62,8 +68,9 @@ class MeroShare(PlatformManager, SessionManagerMixin):
             self.initial_data__own_data = own_data.json()
             return self
         else:
-            # TODO: RAISE EXCEPTION !!
-            return None
+            raise MeroshareDataLoadError(
+                f"[!{own_data.status_code}!] Error getting data from URL: '{own_data.url}'\n{own_data.text}"
+            )
 
     def load_initial_data__own_data_if_required(self):
         if not self.initial_data__own_data:
@@ -78,8 +85,9 @@ class MeroShare(PlatformManager, SessionManagerMixin):
             self.bank_details__my_details = bank_details.json()
             return self
         else:
-            # TODO: Raise Exception
-            return None
+            raise MeroshareDataLoadError(
+                f"[!{bank_details.status_code}!] Error getting data from URL: '{bank_details.url}'\n{bank_details.text}"
+            )
 
     def load_bank_details__my_details_if_required(self):
         if not self.bank_details__my_details:
@@ -94,8 +102,9 @@ class MeroShare(PlatformManager, SessionManagerMixin):
             self.bank_request_data = bank_request.json()
             return self
         else:
-            # TODO: Raise Error !!
-            return None
+            raise MeroshareDataLoadError(
+                f"[!{bank_request.status_code}!] Error getting data from URL: '{bank_request.url}'\n{bank_request.text}"
+            )
 
     def load_bank_request_if_required(self):
         if not self.bank_request_data:
@@ -416,6 +425,17 @@ class MeroShare(PlatformManager, SessionManagerMixin):
         self.load_initial_data__own_data_if_required()
         return self.initial_data__own_data.get("username")
 
+    def logout(self):
+        resp = self.get(self.LOGOUT_REQUEST_URL)
+
+        if resp.ok:
+            self.is_logged_in = False
+            self.session_headers = self.HEADERS
+        else:
+            raise MeroshareLoginError(
+                f"[!{resp.status_code}!] Error Logging in:\n{resp.text}"
+            )
+
     def login(self):
         login_resp = self.post(
             self.LOGIN_REQUEST_URL,
@@ -427,14 +447,17 @@ class MeroShare(PlatformManager, SessionManagerMixin):
         )
 
         if login_resp.ok:
+            self.is_logged_in = True
+
             self.session_headers = {
                 **self.session_headers,
                 "Authorization": login_resp.headers.get("Authorization")
             }
             return self
         else:
-            # TODO: Replace with Exception !!
-            pass
+            raise MeroshareDataLoadError(
+                f"[!{login_resp.status_code}!] Error getting data from URL: '{login_resp.url}'\n{login_resp.text}"
+            )
 
     def get_client_id(self) -> str | None:
         if not self.client_id_data:
@@ -444,7 +467,4 @@ class MeroShare(PlatformManager, SessionManagerMixin):
             if capital_detail.get("code") == self._dp:
                 return capital_detail.get("id")
 
-            # TODO: Replace with Exception !!
-        else:
-            # TODO: Replace with Exception !!
-            pass
+        raise MeroshareClientIDNotFoundError(f"[!] Error getting client id for DP: '{self._dp}'")
