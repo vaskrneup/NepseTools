@@ -4,16 +4,26 @@ import requests
 
 
 class SessionManagerMixin:
-    HEADERS = {}
+    HEADERS: dict = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0) Gecko/20100101 Firefox/89.0",
+    }
 
     def __init__(self) -> None:
-        self.session: requests.Session = requests.Session()
+        self.session: requests.Request = requests
+        self.session_headers = self.HEADERS
 
     def get(self, url: str, *args, **kwargs) -> requests.Response:
-        return self.session.get(url, *args, headers=self.HEADERS, **kwargs)
+        resp = self.session.get(
+            url, *args, headers=self.session_headers, **kwargs
+        )
+
+        return resp
 
     def post(self, url: str, *args, **kwargs) -> requests.Response:
-        return self.session.post(url, *args, headers=self.HEADERS, **kwargs)
+        resp = self.session.post(
+            url, *args, headers=self.session_headers, **kwargs
+        )
+        return resp
 
     def request(self, method: str, url: str, *args, **kwargs) -> requests.Response:
         if method == "GET":
