@@ -4,7 +4,7 @@ from nepse_tools.platforms.meroshare.exceptions import MeroshareDataLoadError, M
 from nepse_tools.utils.session import SessionManagerMixin
 
 
-class MeroShare(PlatformManager, SessionManagerMixin):
+class MeroShareBase(PlatformManager, SessionManagerMixin):
     BASE_URL = "https://github.com/vaskrneup/NepseTools"
 
     # !! AUTH !!
@@ -468,3 +468,7 @@ class MeroShare(PlatformManager, SessionManagerMixin):
                 return capital_detail.get("id")
 
         raise MeroshareClientIDNotFoundError(f"[!] Error getting client id for DP: '{self._dp}'")
+
+
+class MeroShare(MeroShareBase):
+    pass
