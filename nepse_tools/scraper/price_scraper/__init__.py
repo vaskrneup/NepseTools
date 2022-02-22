@@ -1,100 +1,53 @@
 import datetime
+import os.path
+from typing import Iterable
+
 import pandas as pd
+from decouple import config
 
-import requests
-from bs4 import BeautifulSoup
+from nepse_tools.scraper.price_scraper.scraper import PriceScraper
 
 
-class PriceScraper:
-    DEFAULT_HTML_PARSER = "lxml"
+def date_range(start: str | datetime.date, end: str | datetime.date = datetime.datetime.now().date()):
+    start_datetime = start
+    end_datetime = end
+    time_delta = datetime.timedelta(days=1)
 
-    def __init__(self):
-        self.session = requests.Session()
-        self.session.headers = {
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0) Gecko/20100101 Firefox/89.0",
-        }
-        self.token: str = ""
+    if type(start) is str:
+        start_datetime = datetime.datetime.strptime(start, "%Y-%m-%d").date()
+    if type(end) is str:
+        end_datetime = datetime.datetime.strptime(end, "%Y-%m-%d").date()
 
-        self.establish_session()
-        self.parse_share_price(datetime.date(year=2022, day=15, month=2))
+    while start_datetime < end_datetime:
+        start_datetime += time_delta
+        yield start_datetime
 
-    @staticmethod
-    def normalize_text(text: str):
-        text = text.lower().strip()
-        normalized_text = ""
 
-        for letter in text:
-            if letter == " ":
-                normalized_text += "_"
-            elif letter == "%":
-                normalized_text += "percentage"
-            elif letter.isalnum():
-                normalized_text += letter
+def save_data_to_csv(date_generator: Iterable | None = None, csv_path: str = config("SHARE_PRICE_STORAGE_LOCATION")):
+    price_scraper = PriceScraper()
+    scraped_data = {
+        key: [] for key in price_scraper.share_price_keys
+    }
+    scraped_data_df = pd.DataFrame()
 
-        return normalized_text.strip("_")
+    if os.path.exists(csv_path):
+        scraped_data_df = pd.read_csv(csv_path)
 
-    @staticmethod
-    def convert_datatype(text: str):
-        text = str(text)
+    if date_generator is None:
+        last_date = pd.read_csv(csv_path).tail(1)["date"].values[0]
+        date_generator = date_range(last_date, datetime.datetime.now().date())
 
-        try:
-            if "." in text:
-                out = float(text)
-            else:
-                out = int(text)
-        except ValueError:
-            out = text
+    for date in date_generator:
+        print(f"[!] Scraping `{date}`")
+        if price_data := price_scraper.parse_share_price(date=date):
+            for key in scraped_data:
+                scraped_data[key] = [*scraped_data[key], *price_data[key]]
+            print(f"[+] Scraped `{date}`")
+        else:
+            print(f"[-] No Data Available For `{date}`")
 
-        return out
+    scraped_data_df = pd.concat(
+        [scraped_data_df, pd.DataFrame(scraped_data)]
+    )
 
-    @staticmethod
-    def get_formatted_date_from_date(date: datetime.date):
-        return f"{date.year}" \
-               f"-{date.month if date.month > 9 else f'0{date.month}'}-" \
-               f"{date.day if date.day > 9 else f'0{date.day}'}"
-
-    def update_token(self, soup):
-        if token := soup.select("meta[name=_token]"):
-            self.token = token[0].attrs.get("content")
-
-    def establish_session(self):
-        main_page_resp = self.session.get("https://www.sharesansar.com/today-share-price")
-        self.update_token(BeautifulSoup(main_page_resp.text, self.DEFAULT_HTML_PARSER))
-
-    def get_price_html(self, date: datetime.date):
-        resp = self.session.post(
-            "https://www.sharesansar.com/ajaxtodayshareprice",
-            data={
-                "_token": self.token,
-                "sector": "all_sec",
-                "date": self.get_formatted_date_from_date(date)
-            },
-            headers={
-                **self.session.headers,
-                "x-requested-with": "XMLHttpRequest"
-            }
-        )
-        return resp.text
-
-    def parse_share_price(self, date: datetime.date, append_keys: bool = False):
-        soup = BeautifulSoup(self.get_price_html(date), self.DEFAULT_HTML_PARSER)
-        share_price_list = []
-
-        if append_keys:
-            keys = ["date", "time", *(self.normalize_text(key.text) for key in soup.select("thead tr th"))]
-            share_price_list.append(keys)
-
-        data_date = soup.select("h5 span.text-org")
-
-        for tr in soup.select("tbody tr"):
-            share_price_list.append([
-                data_date and data_date[0].text.strip(),
-                "00:00:00",
-                *(
-                    self.convert_datatype(
-                        data.text.strip().replace(",", "")
-                    ) for data in tr.select("td")
-                )
-            ])
-
-        return share_price_list
+    scraped_data_df.to_csv(csv_path, columns=price_scraper.share_price_keys)

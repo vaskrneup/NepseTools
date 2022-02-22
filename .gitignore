@@ -11,3 +11,4 @@ __pycache__
 # SECURITY
 .env
 .test_data
+data
