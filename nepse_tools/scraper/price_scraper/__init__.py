@@ -6,6 +6,7 @@ import pandas as pd
 from decouple import config
 
 from nepse_tools.scraper.price_scraper.scraper import PriceScraper
+from nepse_tools.utils.logger import logger
 
 
 def date_range(start: str | datetime.date, end: str | datetime.date = datetime.datetime.now().date()):
@@ -31,23 +32,25 @@ def save_data_to_csv(date_generator: Iterable | None = None, csv_path: str = con
     scraped_data_df = pd.DataFrame()
 
     if os.path.exists(csv_path):
-        scraped_data_df = pd.read_csv(csv_path)
+        scraped_data_df = pd.read_csv(csv_path, low_memory=False)
 
     if date_generator is None:
         last_date = pd.read_csv(csv_path).tail(1)["date"].values[0]
         date_generator = date_range(last_date, datetime.datetime.now().date())
 
     for date in date_generator:
-        print(f"[!] Scraping `{date}`")
+        logger.info(f"Scraping `{date}`")
+
         if price_data := price_scraper.parse_share_price(date=date):
             for key in scraped_data:
                 scraped_data[key] = [*scraped_data[key], *price_data[key]]
-            print(f"[+] Scraped `{date}`")
+            logger.success(f"Scraped `{date}`")
         else:
-            print(f"[-] No Data Available For `{date}`")
+            logger.error(f"No Data Available For `{date}`")
 
     scraped_data_df = pd.concat(
         [scraped_data_df, pd.DataFrame(scraped_data)]
-    )
+    ).reset_index().drop_duplicates()
 
     scraped_data_df.to_csv(csv_path, columns=price_scraper.share_price_keys)
+    logger.success(f"Data Saved to csv at: `{csv_path}`")

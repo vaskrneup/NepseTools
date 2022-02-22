@@ -15,9 +15,12 @@ class MA(BaseIndicator):
         while end_point < len(self.share_price):
             end_point = start_point + self.ma
             new_data.append(
-                sum([
-                    share.closing_price for share in self.share_price[start_point:end_point]
-                ]) / self.ma
+                {
+                    "date": "",
+                    "ma": sum([
+                        share.closing_price for share in self.share_price[start_point:end_point]
+                    ]) / self.ma
+                }
             )
             start_point += 1
 
