@@ -40,8 +40,8 @@ class DataColumns:
     }
 
     COLUMN_DATA_TYPE = {
-        # date: datetime64,
-        # time: datetime64,
+        date: str,
+        time: str,
         sno: int,
         symbol: str,
         conf: float,
@@ -65,8 +65,10 @@ class DataColumns:
         weeks_low_52: float
     }
     COLUMN_DATA_TYPE_CONVERTER = {
+        date: PriceScraper.convert_to_str,
+        time: PriceScraper.convert_to_str,
         sno: PriceScraper.convert_to_int,
-        symbol: lambda s: str(s),
+        symbol: PriceScraper.convert_to_str,
         conf: PriceScraper.convert_to_float,
         open: PriceScraper.convert_to_float,
         high: PriceScraper.convert_to_float,

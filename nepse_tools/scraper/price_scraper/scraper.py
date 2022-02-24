@@ -1,8 +1,11 @@
 import datetime
 from numbers import Number
+from typing import Any
 
 import requests
 from bs4 import BeautifulSoup
+
+from nepse_tools.utils.logger import logger
 
 
 class PriceScraper:
@@ -37,6 +40,14 @@ class PriceScraper:
             return int(text)
         except ValueError:
             return 0
+
+    @staticmethod
+    def convert_to_str(text: Any):
+        try:
+            return str(text)
+        except Exception as e:
+            logger.error(str(e))
+            return ""
 
     @staticmethod
     def normalize_text(text: str):

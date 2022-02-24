@@ -25,5 +25,5 @@ def price_scraper():
     # x = PriceScraper().parse_share_price(datetime.date(year=2022, day=15, month=2), append_keys=True)
 
 
-# price_scraper()
-ma_test()
+price_scraper()
+# ma_test()
