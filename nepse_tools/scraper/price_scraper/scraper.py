@@ -1,6 +1,6 @@
 import datetime
+from numbers import Number
 
-import pandas as pd
 import requests
 from bs4 import BeautifulSoup
 
@@ -23,6 +23,20 @@ class PriceScraper:
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0) Gecko/20100101 Firefox/89.0",
         }
         self.establish_session()
+
+    @staticmethod
+    def convert_to_float(text: str):
+        try:
+            return float(text)
+        except ValueError:
+            return 0.0
+
+    @staticmethod
+    def convert_to_int(text: str):
+        try:
+            return int(text)
+        except ValueError:
+            return 0
 
     @staticmethod
     def normalize_text(text: str):

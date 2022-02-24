@@ -3,6 +3,9 @@ from typing import Any
 import numpy as np
 import pandas as pd
 from decouple import config
+from numpy import datetime64
+
+from nepse_tools.scraper.price_scraper import PriceScraper
 
 
 class DataColumns:
@@ -34,6 +37,55 @@ class DataColumns:
         date, time, sno, symbol, conf, open, high, low, close, vwap, vol, prev_close, turnover, trans,
         diff, range, diff_percentage, range_percentage, vwap_percentage, days_120, days_180,
         weeks_high_52, weeks_low_52
+    }
+
+    COLUMN_DATA_TYPE = {
+        # date: datetime64,
+        # time: datetime64,
+        sno: int,
+        symbol: str,
+        conf: float,
+        open: float,
+        high: float,
+        low: float,
+        close: float,
+        vwap: float,
+        vol: float,
+        prev_close: float,
+        turnover: float,
+        trans: int,
+        diff: float,
+        range: float,
+        diff_percentage: float,
+        range_percentage: float,
+        vwap_percentage: float,
+        days_120: float,
+        days_180: float,
+        weeks_high_52: float,
+        weeks_low_52: float
+    }
+    COLUMN_DATA_TYPE_CONVERTER = {
+        sno: PriceScraper.convert_to_int,
+        symbol: lambda s: str(s),
+        conf: PriceScraper.convert_to_float,
+        open: PriceScraper.convert_to_float,
+        high: PriceScraper.convert_to_float,
+        low: PriceScraper.convert_to_float,
+        close: PriceScraper.convert_to_float,
+        vwap: PriceScraper.convert_to_float,
+        vol: PriceScraper.convert_to_float,
+        prev_close: PriceScraper.convert_to_float,
+        turnover: PriceScraper.convert_to_float,
+        trans: PriceScraper.convert_to_int,
+        diff: PriceScraper.convert_to_float,
+        range: PriceScraper.convert_to_float,
+        diff_percentage: PriceScraper.convert_to_float,
+        range_percentage: PriceScraper.convert_to_float,
+        vwap_percentage: PriceScraper.convert_to_float,
+        days_120: PriceScraper.convert_to_float,
+        days_180: PriceScraper.convert_to_float,
+        weeks_high_52: PriceScraper.convert_to_float,
+        weeks_low_52: PriceScraper.convert_to_float
     }
 
     def get_col_from_df(
@@ -105,8 +157,9 @@ class BaseIndicator:
     def create_indicator_from_csv_file(
             cls, *, csv_file_path: str = config("SHARE_PRICE_STORAGE_LOCATION"), **kwargs
     ):
+        data = pd.read_csv(csv_file_path)
         kwargs.setdefault(
             "share_prices",
-            pd.read_csv(csv_file_path)
+            data
         )
         return cls(**kwargs)

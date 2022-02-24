@@ -16,7 +16,7 @@ def meroshare():
 
 
 def ma_test():
-    MA.plot_graph(mas_from=[[5], [20]], company_symbol="a")
+    MA.plot_graph(mas_from=[[5], [20]], company_symbol="GBIME")
 
 
 def price_scraper():
