@@ -61,6 +61,7 @@ class BaseIndicator:
             share_prices: list[list] | pd.DataFrame | dict[str, list],
             output_columns: list[str],
             filters: list[callable] = None,
+            company_symbol: str = None,
             **kwargs
     ):
         if isinstance(share_prices, pd.DataFrame):
@@ -71,6 +72,7 @@ class BaseIndicator:
         self.kwargs = kwargs
         self.output_columns = output_columns
         self.filters = filters or []
+        self.company_symbol = company_symbol
         self._processed_data: Any = None
 
         self.output_column_index = {

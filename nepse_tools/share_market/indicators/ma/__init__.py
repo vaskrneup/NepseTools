@@ -1,26 +1,26 @@
+import datetime
+
 import numpy as np
-import pandas as pd
+from matplotlib import pyplot as plt
 
 from nepse_tools.share_market.indicators.base_indicator import BaseIndicator
 
 
 class MA(BaseIndicator):
     def __init__(
-            self, ma_value: int,
-            share_prices: list[list] | pd.DataFrame | dict[str, list],
-            company_symbol: str = None,
+            self,
+            ma_value: int,
             ma_from_column: str = BaseIndicator.DATA_COLUMNS.close,
             ma_value_key_name="ma",
             **kwargs
     ):
-        super().__init__(share_prices, **kwargs)
+        super().__init__(**kwargs)
         self.ma_value = ma_value
-        self.company_symbol = company_symbol
         self.ma_from_column = ma_from_column
         self.ma_value_key_name = ma_value_key_name
 
-        if company_symbol is not None:
-            self.filters.append(lambda data: data[data[self.DATA_COLUMNS.symbol] == company_symbol])
+        if self.company_symbol is not None:
+            self.filters.append(lambda data: data[data[self.DATA_COLUMNS.symbol] == self.company_symbol])
 
     def process_data(self) -> list:
         column_data = self.DATA_COLUMNS.get_col_from_df(
@@ -57,3 +57,63 @@ class MA(BaseIndicator):
             start_point += 1
 
         return new_data
+
+    @staticmethod
+    def plot_graph(mas_from: list[list[int]], company_symbol: str):
+        ma_classes = [
+            MA.create_indicator_from_csv_file(
+                ma_value=ma[0], company_symbol=company_symbol,
+                output_columns=[
+                    MA.DATA_COLUMNS.symbol,
+                    MA.DATA_COLUMNS.date,
+                    MA.DATA_COLUMNS.close,
+                    MA.DATA_COLUMNS.vol
+                ]
+            ) for ma in mas_from
+        ]
+        first = True
+
+        fig, ax = plt.subplots(2, gridspec_kw={'height_ratios': [2, 1]}, sharex='col')
+
+        for mas, class_ in zip(mas_from, ma_classes):
+            if first is True:
+                ax[0].plot(
+                    [
+                        datetime.datetime.strptime(data[MA.DATA_COLUMNS.date], "%Y-%m-%d").date()
+                        for data in class_.processed_data
+                    ],
+                    [
+                        data[class_.ma_from_column] for data in class_.processed_data
+                    ],
+                    label=class_.ma_from_column.replace("_", " ").capitalize()
+                )
+                ax[1].plot(
+                    [
+                        datetime.datetime.strptime(data[MA.DATA_COLUMNS.date], "%Y-%m-%d").date()
+                        for data in class_.processed_data
+                    ],
+                    [
+                        data[MA.DATA_COLUMNS.vol] for data in class_.processed_data
+                    ],
+                    label="Volume"
+                )
+
+            ax[0].plot(
+                [
+                    datetime.datetime.strptime(data[MA.DATA_COLUMNS.date], "%Y-%m-%d").date()
+                    for data in class_.processed_data
+                ],
+                [
+                    data["ma"] for data in class_.processed_data
+                ],
+                label=f"MA-{mas[0]}"
+            )
+            first = False
+
+        ax[0].xaxis.set_tick_params(rotation=30, labelsize=10)
+        ax[0].legend(loc='lower right')
+        ax[1].legend(loc='lower right')
+        fig.suptitle(f"Plot of {company_symbol}")
+        ax[0].grid()
+        ax[1].grid()
+        plt.show()
