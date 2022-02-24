@@ -3,6 +3,7 @@ from decouple import config
 from nepse_tools.platforms.meroshare.api import MeroShare
 from nepse_tools.scraper.price_scraper import save_data_to_csv
 from nepse_tools.share_market.indicators.ma import MA
+from nepse_tools.share_market.notifiers.base_notifier import BaseNotifier
 
 
 def meroshare():
@@ -25,5 +26,14 @@ def price_scraper():
     # x = PriceScraper().parse_share_price(datetime.date(year=2022, day=15, month=2), append_keys=True)
 
 
-price_scraper()
+def notifier():
+    BaseNotifier().send_email(
+        subject="NEw MEssage  !!",
+        receiver_emails=["bhaskar@vaskrneup.com"],
+        attachment_file_path="test_img.jpg"
+    )
+
+
+notifier()
+# price_scraper()
 # ma_test()
