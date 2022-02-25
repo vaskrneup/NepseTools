@@ -57,6 +57,11 @@ class MeroShareCore(PlatformManager, SessionManager):
 
     # !! SHARE HOLDINGS !!
 
+    # !! SHARE TRANSACTIONS !!
+    SHARE_TRANSACTIONS_URL = "https://webbackend.cdsc.com.np/api/meroShareView/myTransaction/"
+
+    # !! SHARE TRANSACTIONS !!
+
     def __init__(self, dp: str, username: str, password: str, pin: str) -> None:
         super(PlatformManager, self).__init__()
         super(SessionManager, self).__init__()
@@ -765,14 +770,6 @@ class MeroShareBase(MeroShareCore):
                 "sortAsc": sort_asc
             }
         )
-        print({
-            "sortBy": sort_by,
-            "demat": [str(self.demat)],
-            "clientCode": self.client_code,
-            "page": page,
-            "size": size,
-            "sortAsc": sort_asc
-        })
 
         if resp.ok:
             return resp.json()
@@ -809,8 +806,32 @@ class MeroShareBase(MeroShareCore):
                 error_data=resp.json()
             )
 
+    # !==================GETTING MY SHARE HOLDINGS DETAILS=================!
 
-# !==================GETTING MY SHARE HOLDINGS DETAILS=================!
+    # ==================GETTING SHARE TRANSACTION DETAILS=================
+    def get_share_transactions(self, symbol: str = None, page: int = 1, size: int = 200):
+        resp = self.post(
+            self.SHARE_TRANSACTIONS_URL,
+            json={
+                "boid": str(self.demat),
+                "clientCode": str(self.client_code),
+                "script": symbol,
+                "fromDate": None,
+                "toDate": None,
+                "requestTypeScript": False if symbol is None else True,
+                "page": page,
+                "size": size
+            }
+        )
+
+        if resp.ok:
+            return resp.json()
+        else:
+            raise MeroshareDataLoadError(
+                f"[!{resp.status_code}!] Error getting data from URL: '{resp.url}'\n{resp.text}",
+                error_data=resp.json()
+            )
+    # !==================GETTING SHARE TRANSACTION DETAILS=================!
 
 
 class MeroShare(MeroShareBase):

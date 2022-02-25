@@ -21,7 +21,7 @@ def meroshare():
     #     )
     # )
     print(
-        ms.get_my_portfolio()
+        ms.get_share_transactions()
     )
 
 
