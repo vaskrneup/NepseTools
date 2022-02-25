@@ -14,6 +14,15 @@ class MA(BaseIndicator):
             ma_value_key_name="moving_average",
             **kwargs
     ):
+        kwargs.setdefault(
+            "output_columns",
+            [
+                self.DATA_COLUMNS.symbol,
+                self.DATA_COLUMNS.date,
+                self.DATA_COLUMNS.close,
+                self.DATA_COLUMNS.vol
+            ]
+        )
         super().__init__(**kwargs)
         self.ma_value = ma_value
         self.ma_from_column = ma_from_column

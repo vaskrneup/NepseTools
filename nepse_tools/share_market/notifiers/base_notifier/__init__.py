@@ -8,11 +8,11 @@ from nepse_tools.utils.notification_mediums.email import EmailManager
 class BaseNotifier:
     def __init__(
             self,
-            scripts: list[str],
+            company_symbol: list[str],
             notification_emails: list[str] = None,
             share_price_data_csv_path: str = config("SHARE_PRICE_STORAGE_LOCATION")
     ):
-        self.scripts = scripts
+        self.scripts = company_symbol
         self.email_manager: EmailManager = EmailManager()
         self.share_price_df = pd.read_csv(share_price_data_csv_path)
 

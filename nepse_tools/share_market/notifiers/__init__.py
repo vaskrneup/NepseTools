@@ -38,11 +38,12 @@ class BulkNotifier:
                 self.email_manager.smtp_server_port,
                 context=self.email_manager.email_context
         ) as server:
-            for email, email_data in self._messages:
-                self.email_manager.send_email(
-                    subject=" || ".join([data["subject"] for data in email_data]),
-                    plain_message="\n\n".join(data["plain_message"] for data in email_data),
-                    html_message="<hr><hr>".join(data["html_message"] for data in email_data),
-                    receiver_email=email,
-                    server=server
-                )
+            for email, email_data in self._messages.items():
+                if email_data:
+                    self.email_manager.send_email(
+                        subject=" || ".join([data["subject"] for data in email_data]),
+                        plain_message="\n\n".join(data["plain_message"] for data in email_data),
+                        html_message="<hr><hr>".join(data["html_message"] for data in email_data),
+                        receiver_email=email,
+                        server=server
+                    )

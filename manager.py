@@ -34,11 +34,13 @@ def notifier():
         notifiers=[
             MACrossNotifier(
                 notification_emails=["vaskrneup@gmail.com", "bhaskar.neupane.58@gmail.com"],
-                scripts=["GBIME", "NRIC", "NMB"]
+                company_symbol=["GBIME", "NRIC", "NMB"],
+                ma_big=20,
+                ma_small=5
             )
         ]
     )
-    bulk_notifier.run()
+    print(bulk_notifier.run())
 
 
 notifier()
