@@ -8,10 +8,10 @@ from nepse_tools.platforms.meroshare.exceptions import (
     MeroshareLoginError,
     MeroshareShareApplicationError, MeroshareCredentialChangeError
 )
-from nepse_tools.utils.session import SessionManagerMixin
+from nepse_tools.utils.session import SessionManager
 
 
-class MeroShareBase(PlatformManager, SessionManagerMixin):
+class MeroShareCore(PlatformManager, SessionManager):
     BASE_URL = "https://github.com/vaskrneup/NepseTools"
 
     # !! AUTH !!
@@ -51,9 +51,15 @@ class MeroShareBase(PlatformManager, SessionManagerMixin):
 
     # !! END CHANGE PASSWORD !!
 
+    # !! SHARE HOLDINGS !!
+    MY_SHARES_URL = "https://webbackend.cdsc.com.np/api/meroShareView/myShare/"
+    MY_PORTFOLIO_URL = "https://webbackend.cdsc.com.np/api/meroShareView/myPortfolio/"
+
+    # !! SHARE HOLDINGS !!
+
     def __init__(self, dp: str, username: str, password: str, pin: str) -> None:
         super(PlatformManager, self).__init__()
-        super(SessionManagerMixin, self).__init__()
+        super(SessionManager, self).__init__()
 
         self._dp: str = dp
         self._username: str = username
@@ -566,6 +572,8 @@ class MeroShareBase(PlatformManager, SessionManagerMixin):
 
     # !==================END AUTH=================!
 
+
+class MeroShareBase(MeroShareCore):
     # ==================APPLY AND UPDATE IPO=================
     def can_apply_to_ipo(self, ipo_id: int) -> bool:
         resp = self.get(
@@ -735,7 +743,74 @@ class MeroShareBase(PlatformManager, SessionManagerMixin):
                 f"[!{resp.status_code}!] Error getting data from URL: '{resp.url}'\n{resp.text}",
                 error_data=resp.json()
             )
+
     # !==================END GETTING ACCOUNT LOGS=================!
+
+    # ===================GETTING MY SHARE HOLDINGS DETAILS==================
+    def get_my_shares(
+            self,
+            sort_by: str = "CCY_SHORT_NAME",
+            page: int = 1,
+            size: int = 200,
+            sort_asc: bool = True
+    ) -> list[dict]:
+        resp = self.post(
+            self.MY_SHARES_URL,
+            json={
+                "sortBy": sort_by,
+                "demat": [self.demat],
+                "clientCode": str(self.client_code),
+                "page": page,
+                "size": size,
+                "sortAsc": sort_asc
+            }
+        )
+        print({
+            "sortBy": sort_by,
+            "demat": [str(self.demat)],
+            "clientCode": self.client_code,
+            "page": page,
+            "size": size,
+            "sortAsc": sort_asc
+        })
+
+        if resp.ok:
+            return resp.json()
+        else:
+            raise MeroshareDataLoadError(
+                f"[!{resp.status_code}!] Error getting data from URL: '{resp.url}'\n{resp.text}",
+                error_data=resp.json()
+            )
+
+    def get_my_portfolio(
+            self,
+            sort_by: str = "script",
+            page: int = 1,
+            size: int = 200,
+            sort_asc: bool = True
+    ) -> list[dict]:
+        resp = self.post(
+            self.MY_PORTFOLIO_URL,
+            json={
+                "sortBy": sort_by,
+                "demat": [str(self.demat)],
+                "clientCode": self.client_code,
+                "page": page,
+                "size": size,
+                "sortAsc": sort_asc
+            }
+        )
+
+        if resp.ok:
+            return resp.json()
+        else:
+            raise MeroshareDataLoadError(
+                f"[!{resp.status_code}!] Error getting data from URL: '{resp.url}'\n{resp.text}",
+                error_data=resp.json()
+            )
+
+
+# !==================GETTING MY SHARE HOLDINGS DETAILS=================!
 
 
 class MeroShare(MeroShareBase):

@@ -1,9 +1,6 @@
-import datetime
-
 from decouple import config
 
 from nepse_tools.platforms.meroshare.api import MeroShare
-from nepse_tools.platforms.meroshare.exceptions import MeroshareShareApplicationError
 from nepse_tools.scraper.price_scraper import save_data_to_csv
 from nepse_tools.share_market.indicators.moving_average import MA
 from nepse_tools.share_market.notifiers import BulkNotifier, MACrossNotifier
@@ -17,11 +14,14 @@ def meroshare():
         pin=config("MEROSHARE_PIN"),
     )
     ms.login()
+    # print(
+    #     ms.get_account_logs(
+    #         start_date=datetime.date(year=2022, month=2, day=1),
+    #         end_date=datetime.datetime.now().date()
+    #     )
+    # )
     print(
-        ms.get_account_logs(
-            start_date=datetime.date(year=2022, month=2, day=1),
-            end_date=datetime.datetime.now().date()
-        )
+        ms.get_my_portfolio()
     )
 
 
