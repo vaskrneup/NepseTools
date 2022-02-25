@@ -1,3 +1,5 @@
+import datetime
+
 from decouple import config
 
 from nepse_tools.platforms.meroshare.api import MeroShare
@@ -15,6 +17,12 @@ def meroshare():
         pin=config("MEROSHARE_PIN"),
     )
     ms.login()
+    print(
+        ms.get_account_logs(
+            start_date=datetime.date(year=2022, month=2, day=1),
+            end_date=datetime.datetime.now().date()
+        )
+    )
 
 
 def ma_test():

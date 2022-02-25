@@ -1,3 +1,4 @@
+import datetime
 import warnings
 
 from nepse_tools.platforms.manager import PlatformManager
@@ -31,6 +32,8 @@ class MeroShareBase(PlatformManager, SessionManagerMixin):
     BANK_REQUEST_URL = "https://webbackend.cdsc.com.np/api/bankRequest/{BANK_CODE}"
     BANKS_LIST_VIEW_URL = "https://webbackend.cdsc.com.np/api/meroShare/bank/"
     BANK_DETAIL_VIEW_URL = "https://webbackend.cdsc.com.np/api/meroShare/bank/{BANK_ID}"
+
+    ACTIVITY_LOG_URL = "https://webbackend.cdsc.com.np/api/meroShare/activityLog/search/"
 
     # !! END ADDITIONAL DATA !!
 
@@ -697,6 +700,42 @@ class MeroShareBase(PlatformManager, SessionManagerMixin):
             )
 
     # !==================CHANGING ACCOUNT DETAILS=================!
+
+    # ==================GETTING ACCOUNT LOGS=================
+    def get_account_logs(
+            self, start_date: datetime.date, end_date: datetime.date, result_size: int = 200,
+            page: int = 1
+    ):
+        start_date = start_date.strftime("%Y-%m-%d")
+        end_date = end_date.strftime("%Y-%m-%d")
+
+        resp = self.post(
+            self.ACTIVITY_LOG_URL,
+            json={
+                "filterFieldParams": [
+                    {"key": "browserName"}
+                ],
+                "page": page,
+                "size": result_size,
+                "searchRoleViewConstants": "VIEW",
+                "filterDateParams": [
+                    {
+                        "key": "recordedDate", "condition": "", "alias": "",
+                        "value": f"BETWEEN '{start_date}' AND '{end_date} 23:59:59'"
+                    },
+                    {"key": "recordedDate", "condition": "", "alias": "", "value": ""}
+                ]
+            }
+        )
+
+        if resp.ok:
+            return resp.json()
+        else:
+            raise MeroshareDataLoadError(
+                f"[!{resp.status_code}!] Error getting data from URL: '{resp.url}'\n{resp.text}",
+                error_data=resp.json()
+            )
+    # !==================END GETTING ACCOUNT LOGS=================!
 
 
 class MeroShare(MeroShareBase):
