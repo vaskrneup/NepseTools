@@ -5,7 +5,7 @@ from nepse_tools.platforms.meroshare.exceptions import (
     MeroshareDataLoadError,
     MeroshareClientIDNotFoundError,
     MeroshareLoginError,
-    MeroshareShareApplicationError
+    MeroshareShareApplicationError, MeroshareCredentialChangeError
 )
 from nepse_tools.utils.session import SessionManagerMixin
 
@@ -41,6 +41,12 @@ class MeroShareBase(PlatformManager, SessionManagerMixin):
     IPO_APPLICATION_SUBMISSION_URL = "https://webbackend.cdsc.com.np/api/meroShare/applicantForm/share/apply"
 
     # !! END APPLICATION, ADDITIONAL DATA !!
+
+    # !! CHANGE PASSWORD !!
+    PASSWORD_CHANGE_POST_URL = "https://webbackend.cdsc.com.np/api/meroShare/changePassword/"
+    PIN_CHANGE_POST_URL = "https://webbackend.cdsc.com.np/api/meroShare/changeTransactionPIN/"
+
+    # !! END CHANGE PASSWORD !!
 
     def __init__(self, dp: str, username: str, password: str, pin: str) -> None:
         super(PlatformManager, self).__init__()
@@ -603,7 +609,8 @@ class MeroShareBase(PlatformManager, SessionManagerMixin):
         else:
             raise MeroshareShareApplicationError(
                 f"[!{resp.status_code}!] Error getting data from URL: "
-                f"'{resp.url}'\n{resp.text}"
+                f"'{resp.url}'\n{resp.text}",
+                error_data=resp.json()
             )
 
     def apply_for_ipo(
@@ -649,6 +656,47 @@ class MeroShareBase(PlatformManager, SessionManagerMixin):
         return responses
 
     # !==================END APPLY AND UPDATE IPO=================!
+
+    # ==================CHANGING ACCOUNT DETAILS=================
+    def change_password(self, new_password: str):
+        resp = self.post(
+            self.PASSWORD_CHANGE_POST_URL,
+            json={
+                "newPassword": new_password,
+                "confirmPassword": new_password,
+                "oldPassword": self.__password,
+            }
+        )
+
+        if resp.ok:
+            self.__password = new_password
+            return resp.json()
+        else:
+            raise MeroshareCredentialChangeError(
+                f"[!{resp.status_code}!] Error getting data from URL: '{resp.url}'\n{resp.text}",
+                error_data=resp.json()
+            )
+
+    def change_pin(self, new_pin: int):
+        resp = self.post(
+            self.PIN_CHANGE_POST_URL,
+            json={
+                "oldTransactionPIN": self.__password,
+                "newTransactionPIN": str(new_pin),
+                "confirmTransactionPIN": str(new_pin),
+            }
+        )
+
+        if resp.ok:
+            self.__pin = new_pin
+            return resp.json()
+        else:
+            raise MeroshareCredentialChangeError(
+                f"[!{resp.status_code}!] Error getting data from URL: '{resp.url}'\n{resp.text}",
+                error_data=resp.json()
+            )
+
+    # !==================CHANGING ACCOUNT DETAILS=================!
 
 
 class MeroShare(MeroShareBase):

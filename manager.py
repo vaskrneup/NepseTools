@@ -1,6 +1,7 @@
 from decouple import config
 
 from nepse_tools.platforms.meroshare.api import MeroShare
+from nepse_tools.platforms.meroshare.exceptions import MeroshareShareApplicationError
 from nepse_tools.scraper.price_scraper import save_data_to_csv
 from nepse_tools.share_market.indicators.moving_average import MA
 from nepse_tools.share_market.notifiers import BulkNotifier, MACrossNotifier
@@ -14,16 +15,6 @@ def meroshare():
         pin=config("MEROSHARE_PIN"),
     )
     ms.login()
-    # print(ms.apply_for_ipo(
-    #     auto_apply_all=True
-    # ))
-    print(ms.bank_id_from_bank_list_view)
-    print(ms.bank_code_from_bank_list_view)
-    print(ms.bank_account_branch_from_bank_detail_view)
-    print(ms.bank_account_number_from_bank_detail_view)
-    print(ms.bank_id_from_bank_detail_view)
-    print(ms.bank_branch_id_from_bank_detail_view)
-    print(ms.id_from_bank_detail_view)
 
 
 def ma_test():

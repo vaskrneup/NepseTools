@@ -1,14 +1,25 @@
-class MeroshareDataLoadError(Exception):
+from nepse_tools.exceptions import NepseToolsBaseException
+
+
+class MeroshareBaseException(NepseToolsBaseException):
     pass
 
 
-class MeroshareLoginError(Exception):
+class MeroshareDataLoadError(MeroshareBaseException):
     pass
 
 
-class MeroshareShareApplicationError(Exception):
+class MeroshareLoginError(MeroshareBaseException):
     pass
 
 
-class MeroshareClientIDNotFoundError(Exception):
+class MeroshareShareApplicationError(MeroshareBaseException):
+    pass
+
+
+class MeroshareClientIDNotFoundError(MeroshareBaseException):
+    pass
+
+
+class MeroshareCredentialChangeError(MeroshareBaseException):
     pass
