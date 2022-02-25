@@ -2,7 +2,8 @@ from decouple import config
 
 from nepse_tools.platforms.meroshare.api import MeroShare
 from nepse_tools.scraper.price_scraper import save_data_to_csv
-from nepse_tools.share_market.indicators.ma import MA
+from nepse_tools.share_market.indicators.moving_average import MA
+from nepse_tools.share_market.notifiers import BulkNotifier, MACrossNotifier
 from nepse_tools.share_market.notifiers.base_notifier import BaseNotifier
 
 
@@ -17,7 +18,9 @@ def meroshare():
 
 
 def ma_test():
-    MA.plot_graph(mas_from=[[5], [20]], company_symbol="GBIME")
+    fig, _, plt = MA.plot_graph(mas_from=[[5], [20]], company_symbol="GBIME")
+    plt.show()
+    fig.savefig("text.jpg")
 
 
 def price_scraper():
@@ -27,11 +30,15 @@ def price_scraper():
 
 
 def notifier():
-    BaseNotifier().send_email(
-        subject="NEw MEssage  !!",
-        receiver_emails=["bhaskar@vaskrneup.com"],
-        attachment_file_path="test_img.jpg"
+    bulk_notifier = BulkNotifier(
+        notifiers=[
+            MACrossNotifier(
+                notification_emails=["vaskrneup@gmail.com", "bhaskar.neupane.58@gmail.com"],
+                scripts=["GBIME", "NRIC", "NMB"]
+            )
+        ]
     )
+    bulk_notifier.run()
 
 
 notifier()

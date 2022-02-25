@@ -13,10 +13,26 @@ class EmailManager:
     def __init__(self):
         self._sender_email: str = config("MAIL_EMAIL")
         self._mail_password: str = config("MAIL_PASSWORD")
-        self._smtp_server_address: str = config("MAIL_SMTP_SERVER_ADDRESS")
-        self._smtp_server_port: int = int(config("MAIL_SMTP_SERVER_PORT"))
 
-        self._email_session: smtplib.SMTP_SSL | None = None
+        self.smtp_server_address: str = config("MAIL_SMTP_SERVER_ADDRESS")
+        self.smtp_server_port: int = int(config("MAIL_SMTP_SERVER_PORT"))
+        self.email_context = ssl.create_default_context()
+
+    @staticmethod
+    def get_send_mail_kwargs(
+            subject: str,
+            plain_message: str,
+            html_message: str,
+            receiver_emails: list[str],
+            attachment_file_paths: list[str] = None,
+    ) -> dict:
+        return {
+            "subject": subject,
+            "plain_message": plain_message,
+            "html_message": html_message,
+            "receiver_emails": receiver_emails,
+            "attachment_file_paths": attachment_file_paths
+        }
 
     @staticmethod
     def attach_documents_to_email(message: MIMEMultipart, attachment_file_paths: list[str]):
@@ -32,41 +48,69 @@ class EmailManager:
             )
             message.attach(part)
 
+    def _send_email(
+            self,
+            subject: str,
+            plain_message: str,
+            receiver_email: list[str],
+            html_message: str = None,
+            attachment_file_paths: list[str] = None,
+            server: smtplib.SMTP_SSL = None,
+    ):
+        server.login(self._sender_email, self._mail_password)
+
+        message = MIMEMultipart("alternative")
+
+        if attachment_file_paths is not None:
+            self.attach_documents_to_email(message, attachment_file_paths)
+
+        message["Subject"] = subject
+        message["From"] = self._sender_email
+        message["To"] = ",".join(receiver_email)
+
+        message.attach(MIMEText(plain_message, "plain"))
+        if html_message:
+            # Second one will try to render first in client side.
+            message.attach(MIMEText(html_message, "html"))
+
+        server.sendmail(
+            self._sender_email, receiver_email, message.as_string()
+        )
+
     def send_email(
             self,
             subject: str,
             plain_message: str,
-            receiver_emails: list[str],
+            receiver_email: str | list[str],
             html_message: str = None,
-            attachment_file_paths: list[str] = None
+            attachment_file_paths: list[str] = None,
+            server: smtplib.SMTP_SSL = None
     ) -> bool:
-        context = ssl.create_default_context()
+        if type(receiver_email) is str:
+            receiver_email = [receiver_email]
 
-        with smtplib.SMTP_SSL(
-                self._smtp_server_address,
-                self._smtp_server_port,
-                context=context
-        ) as server:
-            server.login(self._sender_email, self._mail_password)
-
-            for receiver_email in receiver_emails:
-                message = MIMEMultipart("alternative")
-
-                if attachment_file_paths is not None:
-                    self.attach_documents_to_email(message, attachment_file_paths)
-
-                message["Subject"] = subject
-                message["From"] = self._sender_email
-                message["To"] = receiver_email
-                message["Bcc"] = receiver_email
-
-                message.attach(MIMEText(plain_message, "plain"))
-                if html_message:
-                    # Second one will try to render first in client side.
-                    message.attach(MIMEText(html_message, "html"))
-
-                server.sendmail(
-                    self._sender_email, receiver_email, message.as_string()
+        if server is None:
+            with smtplib.SMTP_SSL(
+                    self.smtp_server_address,
+                    self.smtp_server_port,
+                    context=self.email_context
+            ) as server:
+                self._send_email(
+                    subject,
+                    plain_message,
+                    receiver_email,
+                    html_message,
+                    attachment_file_paths,
+                    server
                 )
+        else:
+            self._send_email(
+                subject,
+                plain_message,
+                receiver_email,
+                html_message,
+                attachment_file_paths,
+                server
+            )
 
         return True

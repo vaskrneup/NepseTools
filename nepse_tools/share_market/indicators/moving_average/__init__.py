@@ -11,7 +11,7 @@ class MA(BaseIndicator):
             self,
             ma_value: int,
             ma_from_column: str = BaseIndicator.DATA_COLUMNS.close,
-            ma_value_key_name="ma",
+            ma_value_key_name="moving_average",
             **kwargs
     ):
         super().__init__(**kwargs)
@@ -104,7 +104,7 @@ class MA(BaseIndicator):
                     for data in class_.processed_data
                 ],
                 [
-                    data["ma"] for data in class_.processed_data
+                    data["moving_average"] for data in class_.processed_data
                 ],
                 label=f"MA-{mas[0]}"
             )
@@ -116,4 +116,7 @@ class MA(BaseIndicator):
         fig.suptitle(f"Plot of {company_symbol}")
         ax[0].grid()
         ax[1].grid()
-        plt.show()
+        return fig, ax, plt
+
+
+MovingAverage = MA
