@@ -43,6 +43,15 @@ class MeroShareCore(PlatformManager, SessionManager):
                                  "customerType/{COMPANY_SHARE_ID}/{DEMAT_NUMBER}"
     IPO_APPLICATION_SUBMISSION_URL = "https://webbackend.cdsc.com.np/api/meroShare/applicantForm/share/apply"
 
+    ABSA_CURRENT_ISSUE_URL = "https://webbackend.cdsc.com.np/api/meroShare/companyShare/currentIssue"
+    ABSA_APPLICATION_REPORT_URL = "https://webbackend.cdsc.com.np/api/meroShare/applicantForm/active/search/"
+    ABSA_OLD_APPLICATION_REPORT_URL = "https://webbackend.cdsc.com.np/api/meroShare/migrated/applicantForm/search/"
+
+    ABSA_ISSUE_MANAGER_DETAIL_VIEW_URL = "https://webbackend.cdsc.com.np/api/meroShare/active/{COMPANY_SHARE_ID}"
+    ABSA_APPLIED_IPO_DETAIL_VIEW_URL = "https://webbackend.cdsc.com.np/api/meroShare/applicantForm/" \
+                                       "report/detail/{APPLICATION_FORM_ID}"
+    ABSA_OLD_APPLIED_IPO_DETAIL_VIEW_URL = "https://webbackend.cdsc.com.np/api/meroShare/migrated/applicantForm" \
+                                           "/report/{APPLICATION_FORM_ID}"
     # !! END APPLICATION, ADDITIONAL DATA !!
 
     # !! CHANGE PASSWORD !!
@@ -594,7 +603,8 @@ class MeroShareBase(MeroShareCore):
 
     def get_applicable_shares(self) -> dict:
         resp = self.post(
-            self.APPLICABLE_NEW_IPO_URL, json={
+            self.APPLICABLE_NEW_IPO_URL,
+            json={
                 "filterFieldParams": [
                     {"key": "companyIssue.companyISIN.script", "alias": "Scrip"},
                     {"key": "companyIssue.companyISIN.company.name", "alias": "Company Name"},
@@ -672,6 +682,106 @@ class MeroShareBase(MeroShareCore):
         return responses
 
     # !==================END APPLY AND UPDATE IPO=================!
+
+    # ==================ABSA RELATED=================
+    def get_application_reports(self, page: int = 1, size: int = 200):
+        resp = self.post(
+            self.ABSA_APPLICATION_REPORT_URL,
+            json={
+                "filterFieldParams": [
+                    {"key": "companyShare.companyIssue.companyISIN.script", "alias": "Scrip"},
+                    {"key": "companyShare.companyIssue.companyISIN.company.name", "alias": "Company Name"}
+                ],
+                "page": page,
+                "size": size,
+                "searchRoleViewConstants": "VIEW_APPLICANT_FORM_COMPLETE",
+                "filterDateParams": [
+                    {"key": "appliedDate", "condition": "", "alias": "", "value": ""},
+                    {"key": "appliedDate", "condition": "", "alias": "", "value": ""}
+                ]
+            }
+        )
+
+        if resp.ok:
+            return resp.json()
+        else:
+            raise MeroshareDataLoadError(
+                f"[!{resp.status_code}!] Error getting data from URL: '{resp.url}'\n{resp.text}",
+                error_data=resp.json()
+            )
+
+    def get_old_application_reports(self, page: int = 1, size: int = 200):
+        resp = self.post(
+            self.ABSA_OLD_APPLICATION_REPORT_URL,
+            json={
+                "filterFieldParams": [
+                    {"key": "companyShare.companyIssue.companyISIN.script", "alias": "Scrip"},
+                    {"key": "companyShare.companyIssue.companyISIN.company.name", "alias": "Company Name"}
+                ],
+                "page": page,
+                "size": size,
+                "searchRoleViewConstants": "VIEW",
+                "filterDateParams": [
+                    {"key": "appliedDate", "condition": "", "alias": "", "value": ""},
+                    {"key": "appliedDate", "condition": "", "alias": "", "value": ""}
+                ]
+            }
+        )
+
+        if resp.ok:
+            return resp.json()
+        else:
+            raise MeroshareDataLoadError(
+                f"[!{resp.status_code}!] Error getting data from URL: '{resp.url}'\n{resp.text}",
+                error_data=resp.json()
+            )
+
+    def get_ipo_issue_manager_details(self, company_share_id: int):
+        resp = self.get(
+            self.ABSA_ISSUE_MANAGER_DETAIL_VIEW_URL.format(COMPANY_SHARE_ID=company_share_id)
+        )
+
+        if resp.ok:
+            return resp.json()
+        else:
+            raise MeroshareDataLoadError(
+                f"[!{resp.status_code}!] Error getting data from URL: '{resp.url}'\n{resp.text}",
+                error_data=resp.json()
+            )
+
+    def get_new_applied_ipo_details(self, application_form_id: int):
+        resp = self.get(
+            self.ABSA_APPLIED_IPO_DETAIL_VIEW_URL.format(APPLICATION_FORM_ID=application_form_id)
+        )
+
+        if resp.ok:
+            return resp.json()
+        else:
+            raise MeroshareDataLoadError(
+                f"[!{resp.status_code}!] Error getting data from URL: '{resp.url}'\n{resp.text}",
+                error_data=resp
+            )
+
+    def get_old_applied_ipo_details(self, application_form_id: int):
+        resp = self.get(
+            self.ABSA_OLD_APPLIED_IPO_DETAIL_VIEW_URL.format(APPLICATION_FORM_ID=application_form_id)
+        )
+
+        if resp.ok:
+            return resp.json()
+        else:
+            raise MeroshareDataLoadError(
+                f"[!{resp.status_code}!] Error getting data from URL: '{resp.url}'\n{resp.text}",
+                error_data=resp
+            )
+
+    def get_applied_ipo_details(self, application_form_id: int):
+        try:
+            return self.get_new_applied_ipo_details(application_form_id)
+        except MeroshareDataLoadError:
+            return self.get_old_applied_ipo_details(application_form_id)
+
+    # !==================ABSA RELATED=================!
 
     # ==================CHANGING ACCOUNT DETAILS=================
     def change_password(self, new_password: str):

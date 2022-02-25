@@ -21,7 +21,7 @@ def meroshare():
     #     )
     # )
     print(
-        ms.get_share_transactions()
+        ms.get_applied_ipo_details(application_form_id=123123123)
     )
 
 
