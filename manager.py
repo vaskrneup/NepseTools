@@ -4,17 +4,26 @@ from nepse_tools.platforms.meroshare.api import MeroShare
 from nepse_tools.scraper.price_scraper import save_data_to_csv
 from nepse_tools.share_market.indicators.moving_average import MA
 from nepse_tools.share_market.notifiers import BulkNotifier, MACrossNotifier
-from nepse_tools.share_market.notifiers.base_notifier import BaseNotifier
 
 
 def meroshare():
     ms = MeroShare(
         dp=config("MEROSHARE_DP"),
         username=config("MEROSHARE_USERNAME"),
-        password=config("MEROSHARE_PASSWORD")
+        password=config("MEROSHARE_PASSWORD"),
+        pin=config("MEROSHARE_PIN"),
     )
     ms.login()
-    print(ms.crn_number)
+    # print(ms.apply_for_ipo(
+    #     auto_apply_all=True
+    # ))
+    print(ms.bank_id_from_bank_list_view)
+    print(ms.bank_code_from_bank_list_view)
+    print(ms.bank_account_branch_from_bank_detail_view)
+    print(ms.bank_account_number_from_bank_detail_view)
+    print(ms.bank_id_from_bank_detail_view)
+    print(ms.bank_branch_id_from_bank_detail_view)
+    print(ms.id_from_bank_detail_view)
 
 
 def ma_test():
@@ -43,6 +52,7 @@ def notifier():
     print(bulk_notifier.run())
 
 
-notifier()
+meroshare()
+# notifier()
 # price_scraper()
 # ma_test()

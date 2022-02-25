@@ -8,7 +8,8 @@ class TestMeroshare:
     ms = MeroShare(
         dp=config("MEROSHARE_DP"),
         username=config("MEROSHARE_USERNAME"),
-        password=config("MEROSHARE_PASSWORD")
+        password=config("MEROSHARE_PASSWORD"),
+        pin=config("MEROSHARE_PIN"),
     )
     TEST_DATA = load_test_data("meroshare_test_data.json")
 
@@ -301,3 +302,45 @@ class TestMeroshare:
     def test_username(self) -> None:
         self.check_with_test_data(key="username", test_value=self.ms.username)
         assert type(self.ms.username) is str
+
+    def test_bank_id_from_bank_list_view(self) -> None:
+        self.check_with_test_data(
+            key="bank_id_from_bank_list_view",
+            test_value=self.ms.bank_id_from_bank_list_view
+        )
+
+    def test_bank_code_from_bank_list_view(self) -> None:
+        self.check_with_test_data(
+            key="bank_code_from_bank_list_view",
+            test_value=self.ms.bank_code_from_bank_list_view
+        )
+
+    def test_bank_account_branch_from_bank_detail_view(self) -> None:
+        self.check_with_test_data(
+            key="bank_account_branch_from_bank_detail_view",
+            test_value=self.ms.bank_account_branch_from_bank_detail_view
+        )
+
+    def test_bank_account_number_from_bank_detail_view(self) -> None:
+        self.check_with_test_data(
+            key="bank_account_number_from_bank_detail_view",
+            test_value=self.ms.bank_account_number_from_bank_detail_view
+        )
+
+    def test_bank_id_from_bank_detail_view(self) -> None:
+        self.check_with_test_data(
+            key="bank_id_from_bank_detail_view",
+            test_value=self.ms.bank_id_from_bank_detail_view
+        )
+
+    def test_bank_branch_id_from_bank_detail_view(self) -> None:
+        self.check_with_test_data(
+            key="bank_branch_id_from_bank_detail_view",
+            test_value=self.ms.bank_branch_id_from_bank_detail_view
+        )
+
+    def test_id_from_bank_detail_view(self) -> None:
+        self.check_with_test_data(
+            key="id_from_bank_detail_view",
+            test_value=self.ms.id_from_bank_detail_view
+        )

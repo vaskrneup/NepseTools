@@ -1,6 +1,12 @@
+import warnings
+
 from nepse_tools.platforms.manager import PlatformManager
-from nepse_tools.platforms.meroshare.exceptions import MeroshareDataLoadError, MeroshareClientIDNotFoundError, \
-    MeroshareLoginError
+from nepse_tools.platforms.meroshare.exceptions import (
+    MeroshareDataLoadError,
+    MeroshareClientIDNotFoundError,
+    MeroshareLoginError,
+    MeroshareShareApplicationError
+)
 from nepse_tools.utils.session import SessionManagerMixin
 
 
@@ -23,22 +29,35 @@ class MeroShareBase(PlatformManager, SessionManagerMixin):
     INITIAL_DATA__OWN_DATA_URL = "https://webbackend.cdsc.com.np/api/meroShare/ownDetail/"
     BANK_DATA_REQUEST__OWN_DETAIL_URL = "https://webbackend.cdsc.com.np/api/meroShareView/myDetail/{BOID}"
     BANK_REQUEST_URL = "https://webbackend.cdsc.com.np/api/bankRequest/{BANK_CODE}"
+    BANKS_LIST_VIEW_URL = "https://webbackend.cdsc.com.np/api/meroShare/bank/"
+    BANK_DETAIL_VIEW_URL = "https://webbackend.cdsc.com.np/api/meroShare/bank/{BANK_ID}"
 
     # !! END ADDITIONAL DATA !!
 
-    def __init__(self, dp: str, username: str, password: str) -> None:
+    # !! APPLICATION, ADDITIONAL DATA !!
+    APPLICABLE_NEW_IPO_URL = "https://webbackend.cdsc.com.np/api/meroShare/companyShare/applicableIssue/"
+    CAN_APPLY_TO_IPO_CHECK_URL = "https://webbackend.cdsc.com.np/api/meroShare/applicantForm/" \
+                                 "customerType/{COMPANY_SHARE_ID}/{DEMAT_NUMBER}"
+    IPO_APPLICATION_SUBMISSION_URL = "https://webbackend.cdsc.com.np/api/meroShare/applicantForm/share/apply"
+
+    # !! END APPLICATION, ADDITIONAL DATA !!
+
+    def __init__(self, dp: str, username: str, password: str, pin: str) -> None:
         super(PlatformManager, self).__init__()
         super(SessionManagerMixin, self).__init__()
 
         self._dp: str = dp
         self._username: str = username
         self.__password: str = password
+        self.__pin: str = pin
 
         self.client_id_data: list[dict] = []
 
         self.initial_data__own_data: dict = {}
         self.bank_details__my_details: dict = {}
         self.bank_request_data: dict = {}
+        self.bank_list_view_data: dict = {}
+        self.bank_detail_view_data: dict = {}
 
         self.is_logged_in = False
 
@@ -109,6 +128,72 @@ class MeroShareBase(PlatformManager, SessionManagerMixin):
     def load_bank_request_if_required(self):
         if not self.bank_request_data:
             self.load_bank_request()
+
+    def load_bank_list_view(self):
+        resp = self.get(self.BANKS_LIST_VIEW_URL)
+
+        if resp.ok:
+            data = resp.json()
+            self.bank_list_view_data = data[0] if data else []
+            return self
+        else:
+            raise MeroshareDataLoadError(
+                f"[!{resp.status_code}!] Error getting data from URL: '{resp.url}'\n{resp.text}"
+            )
+
+    def load_bank_list_view_if_required(self):
+        if not self.bank_list_view_data:
+            self.load_bank_list_view()
+
+    def load_bank_detail_view(self):
+        resp = self.get(self.BANK_DETAIL_VIEW_URL.format(BANK_ID=self.bank_id_from_bank_list_view))
+
+        if resp.ok:
+            self.bank_detail_view_data = resp.json()
+            return self
+        else:
+            raise MeroshareDataLoadError(
+                f"[!{resp.status_code}!] Error getting data from URL: '{resp.url}'\n{resp.text}"
+            )
+
+    def load_bank_detail_view_if_required(self):
+        if not self.bank_detail_view_data:
+            self.load_bank_detail_view()
+
+    @property
+    def bank_id_from_bank_list_view(self):
+        self.load_bank_list_view_if_required()
+        return self.bank_list_view_data.get("id")
+
+    @property
+    def bank_code_from_bank_list_view(self):
+        self.load_bank_list_view_if_required()
+        return self.bank_list_view_data.get("code")
+
+    @property
+    def bank_account_branch_from_bank_detail_view(self):
+        self.load_bank_detail_view_if_required()
+        return self.bank_detail_view_data.get("accountBranchId")
+
+    @property
+    def bank_account_number_from_bank_detail_view(self):
+        self.load_bank_detail_view_if_required()
+        return self.bank_detail_view_data.get("accountNumber")
+
+    @property
+    def bank_id_from_bank_detail_view(self):
+        self.load_bank_detail_view_if_required()
+        return self.bank_detail_view_data.get("bankId")
+
+    @property
+    def bank_branch_id_from_bank_detail_view(self):
+        self.load_bank_detail_view_if_required()
+        return self.bank_detail_view_data.get("branchID")
+
+    @property
+    def id_from_bank_detail_view(self):
+        self.load_bank_detail_view_if_required()
+        return self.bank_detail_view_data.get("id")
 
     @property
     def bank_branch(self):
@@ -425,16 +510,16 @@ class MeroShareBase(PlatformManager, SessionManagerMixin):
         self.load_initial_data__own_data_if_required()
         return self.initial_data__own_data.get("username")
 
-    def logout(self):
-        resp = self.get(self.LOGOUT_REQUEST_URL)
+    # ==================AUTH=================
+    def get_client_id(self) -> str | None:
+        if not self.client_id_data:
+            self.load_client_id_data()
 
-        if resp.ok:
-            self.is_logged_in = False
-            self.session_headers = self.HEADERS
-        else:
-            raise MeroshareLoginError(
-                f"[!{resp.status_code}!] Error Logging in:\n{resp.text}"
-            )
+        for capital_detail in self.client_id_data:
+            if capital_detail.get("code") == self._dp:
+                return capital_detail.get("id")
+
+        raise MeroshareClientIDNotFoundError(f"[!] Error getting client id for DP: '{self._dp}'")
 
     def login(self):
         login_resp = self.post(
@@ -459,15 +544,111 @@ class MeroShareBase(PlatformManager, SessionManagerMixin):
                 f"[!{login_resp.status_code}!] Error getting data from URL: '{login_resp.url}'\n{login_resp.text}"
             )
 
-    def get_client_id(self) -> str | None:
-        if not self.client_id_data:
-            self.load_client_id_data()
+    def logout(self):
+        resp = self.get(self.LOGOUT_REQUEST_URL)
 
-        for capital_detail in self.client_id_data:
-            if capital_detail.get("code") == self._dp:
-                return capital_detail.get("id")
+        if resp.ok:
+            self.is_logged_in = False
+            self.session_headers = self.HEADERS
+        else:
+            raise MeroshareLoginError(
+                f"[!{resp.status_code}!] Error Logging in:\n{resp.text}"
+            )
 
-        raise MeroshareClientIDNotFoundError(f"[!] Error getting client id for DP: '{self._dp}'")
+    # !==================END AUTH=================!
+
+    # ==================APPLY AND UPDATE IPO=================
+    def can_apply_to_ipo(self, ipo_id: int) -> bool:
+        resp = self.get(
+            self.CAN_APPLY_TO_IPO_CHECK_URL.format(
+                COMPANY_SHARE_ID=ipo_id,
+                DEMAT_NUMBER=self.demat
+            )
+        )
+
+        if resp.ok and resp.json().get("message") == "Customer can apply.":
+            return True
+        return False
+
+    def get_applicable_shares(self) -> dict:
+        resp = self.post(
+            self.APPLICABLE_NEW_IPO_URL, json={
+                "filterFieldParams": [
+                    {"key": "companyIssue.companyISIN.script", "alias": "Scrip"},
+                    {"key": "companyIssue.companyISIN.company.name", "alias": "Company Name"},
+                    {"key": "companyIssue.assignedToClient.name", "value": "", "alias": "Issue Manager"}
+                ],
+                "page": 1,
+                "size": 10,
+                "searchRoleViewConstants": "VIEW_APPLICABLE_SHARE",
+                "filterDateParams": [
+                    {"key": "minIssueOpenDate", "condition": "", "alias": "", "value": ""},
+                    {"key": "maxIssueCloseDate", "condition": "", "alias": "", "value": ""}
+                ]
+            }
+        )
+
+        if resp.ok:
+            return resp.json()
+        else:
+            raise MeroshareDataLoadError(
+                f"[!{resp.status_code}!] Error getting data from URL: '{resp.url}'\n{resp.text}"
+            )
+
+    def _apply_for_ipo(self, payload: dict):
+        resp = self.post(self.IPO_APPLICATION_SUBMISSION_URL, json=payload)
+
+        if resp.ok:
+            return resp.json()
+        else:
+            raise MeroshareShareApplicationError(
+                f"[!{resp.status_code}!] Error getting data from URL: "
+                f"'{resp.url}'\n{resp.text}"
+            )
+
+    def apply_for_ipo(
+            self, company_share_id: int = None, scrip: str = None, auto_apply_all: bool = False,
+            number_of_shares: int = 10
+    ) -> list[dict] | None:
+        applicable_shares = self.get_applicable_shares().get("object", [])
+        responses = []
+
+        if company_share_id and scrip:
+            warnings.warn(
+                f"Only one field is allowed but provided both: "
+                f"`{company_share_id=}` and `{scrip=}`. Using `{company_share_id=}` as default"
+            )
+        if not company_share_id and not scrip and auto_apply_all is False:
+            raise ValueError(f"One of the parameter must be given. {company_share_id=}, {scrip=}, {company_share_id=}")
+
+        for applicable_share in applicable_shares:
+            if (
+                    auto_apply_all is True
+            ) or (
+                    applicable_share.get("companyShareId") == company_share_id
+                    or applicable_share.get("scrip") == scrip
+            ):
+                if self.can_apply_to_ipo(applicable_share.get("companyShareId")):
+                    responses.append(
+                        self._apply_for_ipo(
+                            payload={
+                                "accountBranchId": self.bank_branch_id,
+                                "accountNumber": self.bank_account_number_from_bank_detail_view,
+                                "appliedKitta": str(number_of_shares),
+                                "bankId": self.bank_id_from_bank_list_view,
+                                "boid": self.boid,
+                                "companyShareId": str(applicable_share.get("companyShareId")),
+                                "crnNumber": self.crn_number,
+                                "customerId": self.id_from_bank_detail_view,
+                                "demat": self.demat,
+                                "transactionPIN": self.__pin,
+                            }
+                        )
+                    )
+
+        return responses
+
+    # !==================END APPLY AND UPDATE IPO=================!
 
 
 class MeroShare(MeroShareBase):
