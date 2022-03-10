@@ -1,0 +1,674 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>nepse_tools.share_market.indicators.base_indicator API documentation</title>
+<meta name="description" content="" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>nepse_tools.share_market.indicators.base_indicator</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">from typing import Any
+
+import numpy as np
+import pandas as pd
+from decouple import config
+
+from nepse_tools.scraper.price_scraper import PriceScraper
+
+
+class DataColumns:
+    date: str = &#34;date&#34;
+    time: str = &#34;time&#34;
+    sno: str = &#34;sno&#34;
+    symbol: str = &#34;symbol&#34;
+    conf: str = &#34;conf&#34;
+    open: str = &#34;open&#34;
+    high: str = &#34;high&#34;
+    low: str = &#34;low&#34;
+    close: str = &#34;close&#34;
+    vwap: str = &#34;vwap&#34;
+    vol: str = &#34;vol&#34;
+    prev_close: str = &#34;prev_close&#34;
+    turnover: str = &#34;turnover&#34;
+    trans: str = &#34;trans&#34;
+    diff: str = &#34;diff&#34;
+    range: str = &#34;range&#34;
+    diff_percentage: str = &#34;diff_percentage&#34;
+    range_percentage: str = &#34;range_percentage&#34;
+    vwap_percentage: str = &#34;vwap_percentage&#34;
+    days_120: str = &#34;120_days&#34;
+    days_180: str = &#34;180_days&#34;
+    weeks_high_52: str = &#34;52_weeks_high&#34;
+    weeks_low_52: str = &#34;52_weeks_low&#34;
+
+    AVAILABLE_COLUMNS = {
+        date, time, sno, symbol, conf, open, high, low, close, vwap, vol, prev_close, turnover, trans,
+        diff, range, diff_percentage, range_percentage, vwap_percentage, days_120, days_180,
+        weeks_high_52, weeks_low_52
+    }
+
+    COLUMN_DATA_TYPE = {
+        date: str,
+        time: str,
+        sno: int,
+        symbol: str,
+        conf: float,
+        open: float,
+        high: float,
+        low: float,
+        close: float,
+        vwap: float,
+        vol: float,
+        prev_close: float,
+        turnover: float,
+        trans: int,
+        diff: float,
+        range: float,
+        diff_percentage: float,
+        range_percentage: float,
+        vwap_percentage: float,
+        days_120: float,
+        days_180: float,
+        weeks_high_52: float,
+        weeks_low_52: float
+    }
+    COLUMN_DATA_TYPE_CONVERTER = {
+        date: PriceScraper.convert_to_str,
+        time: PriceScraper.convert_to_str,
+        sno: PriceScraper.convert_to_int,
+        symbol: PriceScraper.convert_to_str,
+        conf: PriceScraper.convert_to_float,
+        open: PriceScraper.convert_to_float,
+        high: PriceScraper.convert_to_float,
+        low: PriceScraper.convert_to_float,
+        close: PriceScraper.convert_to_float,
+        vwap: PriceScraper.convert_to_float,
+        vol: PriceScraper.convert_to_float,
+        prev_close: PriceScraper.convert_to_float,
+        turnover: PriceScraper.convert_to_float,
+        trans: PriceScraper.convert_to_int,
+        diff: PriceScraper.convert_to_float,
+        range: PriceScraper.convert_to_float,
+        diff_percentage: PriceScraper.convert_to_float,
+        range_percentage: PriceScraper.convert_to_float,
+        vwap_percentage: PriceScraper.convert_to_float,
+        days_120: PriceScraper.convert_to_float,
+        days_180: PriceScraper.convert_to_float,
+        weeks_high_52: PriceScraper.convert_to_float,
+        weeks_low_52: PriceScraper.convert_to_float
+    }
+
+    def get_col_from_df(
+            self, df: pd.DataFrame, col: list[str] | str,
+            data_type: list | np.ndarray = np.ndarray
+    ) -&gt; list | np.ndarray:
+        if type(col) is str and col not in self.AVAILABLE_COLUMNS:
+            raise ValueError(f&#34;`{col=}` is not a valid column.&#34;)
+        elif type(col) is list and len(set(col).difference(self.AVAILABLE_COLUMNS)) != 0:
+            raise ValueError(f&#34;`{&#39;,&#39;.join(set(col).difference(self.AVAILABLE_COLUMNS))}` are not a valid column.&#34;)
+
+        if data_type is list:
+            return df[col].to_list() if type(col) is str else [df[_col].to_list() for _col in col]
+        elif data_type is np.ndarray:
+            return df[col].to_numpy() if type(col) is str else [df[_col].to_numpy() for _col in col]
+        else:
+            raise ValueError(f&#34;`{data_type=}` not of type, `list` or `np.ndarray`&#34;)
+
+
+class BaseIndicator:
+    DATA_COLUMNS = DataColumns()
+
+    def __init__(
+            self,
+            share_prices: list[list] | pd.DataFrame | dict[str, list],
+            output_columns: list[str],
+            filters: list[callable] = None,
+            company_symbol: str = None,
+            **kwargs
+    ):
+        if isinstance(share_prices, pd.DataFrame):
+            self.share_prices: pd.DataFrame = share_prices
+        else:
+            self.share_prices: pd.DataFrame = pd.DataFrame(share_prices)
+
+        self.kwargs = kwargs
+        self.output_columns = output_columns
+        self.filters = filters or []
+        self.company_symbol = company_symbol
+        self._processed_data: Any = None
+
+        self.output_column_index = {
+            column: i
+            for i, column in enumerate(output_columns)
+        }
+
+    @property
+    def processed_data(self):
+        if self._processed_data is None:
+            self._process_data()
+
+        return self._processed_data
+
+    def process_data(self):
+        raise NotImplementedError()
+
+    def _process_data(self):
+        self._processed_data = self.process_data()
+
+    def filter(self, data: pd.DataFrame) -&gt; pd.DataFrame:
+        final_data = data
+
+        for _filter in self.filters:
+            final_data = _filter(final_data)
+
+        return final_data
+
+    @classmethod
+    def create_indicator_from_csv_file(
+            cls, *, csv_file_path: str = config(&#34;SHARE_PRICE_STORAGE_LOCATION&#34;), **kwargs
+    ):
+        data = pd.read_csv(csv_file_path)
+        kwargs.setdefault(
+            &#34;share_prices&#34;,
+            data
+        )
+        return cls(**kwargs)</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="nepse_tools.share_market.indicators.base_indicator.BaseIndicator"><code class="flex name class">
+<span>class <span class="ident">BaseIndicator</span></span>
+<span>(</span><span>share_prices: list[list] | pandas.core.frame.DataFrame | dict[str, list], output_columns: list, filters: list = None, company_symbol: str = None, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class BaseIndicator:
+    DATA_COLUMNS = DataColumns()
+
+    def __init__(
+            self,
+            share_prices: list[list] | pd.DataFrame | dict[str, list],
+            output_columns: list[str],
+            filters: list[callable] = None,
+            company_symbol: str = None,
+            **kwargs
+    ):
+        if isinstance(share_prices, pd.DataFrame):
+            self.share_prices: pd.DataFrame = share_prices
+        else:
+            self.share_prices: pd.DataFrame = pd.DataFrame(share_prices)
+
+        self.kwargs = kwargs
+        self.output_columns = output_columns
+        self.filters = filters or []
+        self.company_symbol = company_symbol
+        self._processed_data: Any = None
+
+        self.output_column_index = {
+            column: i
+            for i, column in enumerate(output_columns)
+        }
+
+    @property
+    def processed_data(self):
+        if self._processed_data is None:
+            self._process_data()
+
+        return self._processed_data
+
+    def process_data(self):
+        raise NotImplementedError()
+
+    def _process_data(self):
+        self._processed_data = self.process_data()
+
+    def filter(self, data: pd.DataFrame) -&gt; pd.DataFrame:
+        final_data = data
+
+        for _filter in self.filters:
+            final_data = _filter(final_data)
+
+        return final_data
+
+    @classmethod
+    def create_indicator_from_csv_file(
+            cls, *, csv_file_path: str = config(&#34;SHARE_PRICE_STORAGE_LOCATION&#34;), **kwargs
+    ):
+        data = pd.read_csv(csv_file_path)
+        kwargs.setdefault(
+            &#34;share_prices&#34;,
+            data
+        )
+        return cls(**kwargs)</code></pre>
+</details>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li><a title="nepse_tools.share_market.indicators.moving_average.MA" href="../moving_average/index.html#nepse_tools.share_market.indicators.moving_average.MA">MA</a></li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="nepse_tools.share_market.indicators.base_indicator.BaseIndicator.DATA_COLUMNS"><code class="name">var <span class="ident">DATA_COLUMNS</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Static methods</h3>
+<dl>
+<dt id="nepse_tools.share_market.indicators.base_indicator.BaseIndicator.create_indicator_from_csv_file"><code class="name flex">
+<span>def <span class="ident">create_indicator_from_csv_file</span></span>(<span>*, csv_file_path: str = 'data/scraped_data/share_price.csv', **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@classmethod
+def create_indicator_from_csv_file(
+        cls, *, csv_file_path: str = config(&#34;SHARE_PRICE_STORAGE_LOCATION&#34;), **kwargs
+):
+    data = pd.read_csv(csv_file_path)
+    kwargs.setdefault(
+        &#34;share_prices&#34;,
+        data
+    )
+    return cls(**kwargs)</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Instance variables</h3>
+<dl>
+<dt id="nepse_tools.share_market.indicators.base_indicator.BaseIndicator.processed_data"><code class="name">var <span class="ident">processed_data</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def processed_data(self):
+    if self._processed_data is None:
+        self._process_data()
+
+    return self._processed_data</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="nepse_tools.share_market.indicators.base_indicator.BaseIndicator.filter"><code class="name flex">
+<span>def <span class="ident">filter</span></span>(<span>self, data: pandas.core.frame.DataFrame) ‑> pandas.core.frame.DataFrame</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def filter(self, data: pd.DataFrame) -&gt; pd.DataFrame:
+    final_data = data
+
+    for _filter in self.filters:
+        final_data = _filter(final_data)
+
+    return final_data</code></pre>
+</details>
+</dd>
+<dt id="nepse_tools.share_market.indicators.base_indicator.BaseIndicator.process_data"><code class="name flex">
+<span>def <span class="ident">process_data</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def process_data(self):
+    raise NotImplementedError()</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="nepse_tools.share_market.indicators.base_indicator.DataColumns"><code class="flex name class">
+<span>class <span class="ident">DataColumns</span></span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class DataColumns:
+    date: str = &#34;date&#34;
+    time: str = &#34;time&#34;
+    sno: str = &#34;sno&#34;
+    symbol: str = &#34;symbol&#34;
+    conf: str = &#34;conf&#34;
+    open: str = &#34;open&#34;
+    high: str = &#34;high&#34;
+    low: str = &#34;low&#34;
+    close: str = &#34;close&#34;
+    vwap: str = &#34;vwap&#34;
+    vol: str = &#34;vol&#34;
+    prev_close: str = &#34;prev_close&#34;
+    turnover: str = &#34;turnover&#34;
+    trans: str = &#34;trans&#34;
+    diff: str = &#34;diff&#34;
+    range: str = &#34;range&#34;
+    diff_percentage: str = &#34;diff_percentage&#34;
+    range_percentage: str = &#34;range_percentage&#34;
+    vwap_percentage: str = &#34;vwap_percentage&#34;
+    days_120: str = &#34;120_days&#34;
+    days_180: str = &#34;180_days&#34;
+    weeks_high_52: str = &#34;52_weeks_high&#34;
+    weeks_low_52: str = &#34;52_weeks_low&#34;
+
+    AVAILABLE_COLUMNS = {
+        date, time, sno, symbol, conf, open, high, low, close, vwap, vol, prev_close, turnover, trans,
+        diff, range, diff_percentage, range_percentage, vwap_percentage, days_120, days_180,
+        weeks_high_52, weeks_low_52
+    }
+
+    COLUMN_DATA_TYPE = {
+        date: str,
+        time: str,
+        sno: int,
+        symbol: str,
+        conf: float,
+        open: float,
+        high: float,
+        low: float,
+        close: float,
+        vwap: float,
+        vol: float,
+        prev_close: float,
+        turnover: float,
+        trans: int,
+        diff: float,
+        range: float,
+        diff_percentage: float,
+        range_percentage: float,
+        vwap_percentage: float,
+        days_120: float,
+        days_180: float,
+        weeks_high_52: float,
+        weeks_low_52: float
+    }
+    COLUMN_DATA_TYPE_CONVERTER = {
+        date: PriceScraper.convert_to_str,
+        time: PriceScraper.convert_to_str,
+        sno: PriceScraper.convert_to_int,
+        symbol: PriceScraper.convert_to_str,
+        conf: PriceScraper.convert_to_float,
+        open: PriceScraper.convert_to_float,
+        high: PriceScraper.convert_to_float,
+        low: PriceScraper.convert_to_float,
+        close: PriceScraper.convert_to_float,
+        vwap: PriceScraper.convert_to_float,
+        vol: PriceScraper.convert_to_float,
+        prev_close: PriceScraper.convert_to_float,
+        turnover: PriceScraper.convert_to_float,
+        trans: PriceScraper.convert_to_int,
+        diff: PriceScraper.convert_to_float,
+        range: PriceScraper.convert_to_float,
+        diff_percentage: PriceScraper.convert_to_float,
+        range_percentage: PriceScraper.convert_to_float,
+        vwap_percentage: PriceScraper.convert_to_float,
+        days_120: PriceScraper.convert_to_float,
+        days_180: PriceScraper.convert_to_float,
+        weeks_high_52: PriceScraper.convert_to_float,
+        weeks_low_52: PriceScraper.convert_to_float
+    }
+
+    def get_col_from_df(
+            self, df: pd.DataFrame, col: list[str] | str,
+            data_type: list | np.ndarray = np.ndarray
+    ) -&gt; list | np.ndarray:
+        if type(col) is str and col not in self.AVAILABLE_COLUMNS:
+            raise ValueError(f&#34;`{col=}` is not a valid column.&#34;)
+        elif type(col) is list and len(set(col).difference(self.AVAILABLE_COLUMNS)) != 0:
+            raise ValueError(f&#34;`{&#39;,&#39;.join(set(col).difference(self.AVAILABLE_COLUMNS))}` are not a valid column.&#34;)
+
+        if data_type is list:
+            return df[col].to_list() if type(col) is str else [df[_col].to_list() for _col in col]
+        elif data_type is np.ndarray:
+            return df[col].to_numpy() if type(col) is str else [df[_col].to_numpy() for _col in col]
+        else:
+            raise ValueError(f&#34;`{data_type=}` not of type, `list` or `np.ndarray`&#34;)</code></pre>
+</details>
+<h3>Class variables</h3>
+<dl>
+<dt id="nepse_tools.share_market.indicators.base_indicator.DataColumns.AVAILABLE_COLUMNS"><code class="name">var <span class="ident">AVAILABLE_COLUMNS</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="nepse_tools.share_market.indicators.base_indicator.DataColumns.COLUMN_DATA_TYPE"><code class="name">var <span class="ident">COLUMN_DATA_TYPE</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="nepse_tools.share_market.indicators.base_indicator.DataColumns.COLUMN_DATA_TYPE_CONVERTER"><code class="name">var <span class="ident">COLUMN_DATA_TYPE_CONVERTER</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="nepse_tools.share_market.indicators.base_indicator.DataColumns.close"><code class="name">var <span class="ident">close</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="nepse_tools.share_market.indicators.base_indicator.DataColumns.conf"><code class="name">var <span class="ident">conf</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="nepse_tools.share_market.indicators.base_indicator.DataColumns.date"><code class="name">var <span class="ident">date</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="nepse_tools.share_market.indicators.base_indicator.DataColumns.days_120"><code class="name">var <span class="ident">days_120</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="nepse_tools.share_market.indicators.base_indicator.DataColumns.days_180"><code class="name">var <span class="ident">days_180</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="nepse_tools.share_market.indicators.base_indicator.DataColumns.diff"><code class="name">var <span class="ident">diff</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="nepse_tools.share_market.indicators.base_indicator.DataColumns.diff_percentage"><code class="name">var <span class="ident">diff_percentage</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="nepse_tools.share_market.indicators.base_indicator.DataColumns.high"><code class="name">var <span class="ident">high</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="nepse_tools.share_market.indicators.base_indicator.DataColumns.low"><code class="name">var <span class="ident">low</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="nepse_tools.share_market.indicators.base_indicator.DataColumns.open"><code class="name">var <span class="ident">open</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="nepse_tools.share_market.indicators.base_indicator.DataColumns.prev_close"><code class="name">var <span class="ident">prev_close</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="nepse_tools.share_market.indicators.base_indicator.DataColumns.range"><code class="name">var <span class="ident">range</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="nepse_tools.share_market.indicators.base_indicator.DataColumns.range_percentage"><code class="name">var <span class="ident">range_percentage</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="nepse_tools.share_market.indicators.base_indicator.DataColumns.sno"><code class="name">var <span class="ident">sno</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="nepse_tools.share_market.indicators.base_indicator.DataColumns.symbol"><code class="name">var <span class="ident">symbol</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="nepse_tools.share_market.indicators.base_indicator.DataColumns.time"><code class="name">var <span class="ident">time</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="nepse_tools.share_market.indicators.base_indicator.DataColumns.trans"><code class="name">var <span class="ident">trans</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="nepse_tools.share_market.indicators.base_indicator.DataColumns.turnover"><code class="name">var <span class="ident">turnover</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="nepse_tools.share_market.indicators.base_indicator.DataColumns.vol"><code class="name">var <span class="ident">vol</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="nepse_tools.share_market.indicators.base_indicator.DataColumns.vwap"><code class="name">var <span class="ident">vwap</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="nepse_tools.share_market.indicators.base_indicator.DataColumns.vwap_percentage"><code class="name">var <span class="ident">vwap_percentage</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="nepse_tools.share_market.indicators.base_indicator.DataColumns.weeks_high_52"><code class="name">var <span class="ident">weeks_high_52</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="nepse_tools.share_market.indicators.base_indicator.DataColumns.weeks_low_52"><code class="name">var <span class="ident">weeks_low_52</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="nepse_tools.share_market.indicators.base_indicator.DataColumns.get_col_from_df"><code class="name flex">
+<span>def <span class="ident">get_col_from_df</span></span>(<span>self, df: pandas.core.frame.DataFrame, col: list[str] | str, data_type: list | numpy.ndarray = numpy.ndarray) ‑> list | numpy.ndarray</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_col_from_df(
+        self, df: pd.DataFrame, col: list[str] | str,
+        data_type: list | np.ndarray = np.ndarray
+) -&gt; list | np.ndarray:
+    if type(col) is str and col not in self.AVAILABLE_COLUMNS:
+        raise ValueError(f&#34;`{col=}` is not a valid column.&#34;)
+    elif type(col) is list and len(set(col).difference(self.AVAILABLE_COLUMNS)) != 0:
+        raise ValueError(f&#34;`{&#39;,&#39;.join(set(col).difference(self.AVAILABLE_COLUMNS))}` are not a valid column.&#34;)
+
+    if data_type is list:
+        return df[col].to_list() if type(col) is str else [df[_col].to_list() for _col in col]
+    elif data_type is np.ndarray:
+        return df[col].to_numpy() if type(col) is str else [df[_col].to_numpy() for _col in col]
+    else:
+        raise ValueError(f&#34;`{data_type=}` not of type, `list` or `np.ndarray`&#34;)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="nepse_tools.share_market.indicators" href="../index.html">nepse_tools.share_market.indicators</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="nepse_tools.share_market.indicators.base_indicator.BaseIndicator" href="#nepse_tools.share_market.indicators.base_indicator.BaseIndicator">BaseIndicator</a></code></h4>
+<ul class="">
+<li><code><a title="nepse_tools.share_market.indicators.base_indicator.BaseIndicator.DATA_COLUMNS" href="#nepse_tools.share_market.indicators.base_indicator.BaseIndicator.DATA_COLUMNS">DATA_COLUMNS</a></code></li>
+<li><code><a title="nepse_tools.share_market.indicators.base_indicator.BaseIndicator.create_indicator_from_csv_file" href="#nepse_tools.share_market.indicators.base_indicator.BaseIndicator.create_indicator_from_csv_file">create_indicator_from_csv_file</a></code></li>
+<li><code><a title="nepse_tools.share_market.indicators.base_indicator.BaseIndicator.filter" href="#nepse_tools.share_market.indicators.base_indicator.BaseIndicator.filter">filter</a></code></li>
+<li><code><a title="nepse_tools.share_market.indicators.base_indicator.BaseIndicator.process_data" href="#nepse_tools.share_market.indicators.base_indicator.BaseIndicator.process_data">process_data</a></code></li>
+<li><code><a title="nepse_tools.share_market.indicators.base_indicator.BaseIndicator.processed_data" href="#nepse_tools.share_market.indicators.base_indicator.BaseIndicator.processed_data">processed_data</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="nepse_tools.share_market.indicators.base_indicator.DataColumns" href="#nepse_tools.share_market.indicators.base_indicator.DataColumns">DataColumns</a></code></h4>
+<ul class="">
+<li><code><a title="nepse_tools.share_market.indicators.base_indicator.DataColumns.AVAILABLE_COLUMNS" href="#nepse_tools.share_market.indicators.base_indicator.DataColumns.AVAILABLE_COLUMNS">AVAILABLE_COLUMNS</a></code></li>
+<li><code><a title="nepse_tools.share_market.indicators.base_indicator.DataColumns.COLUMN_DATA_TYPE" href="#nepse_tools.share_market.indicators.base_indicator.DataColumns.COLUMN_DATA_TYPE">COLUMN_DATA_TYPE</a></code></li>
+<li><code><a title="nepse_tools.share_market.indicators.base_indicator.DataColumns.COLUMN_DATA_TYPE_CONVERTER" href="#nepse_tools.share_market.indicators.base_indicator.DataColumns.COLUMN_DATA_TYPE_CONVERTER">COLUMN_DATA_TYPE_CONVERTER</a></code></li>
+<li><code><a title="nepse_tools.share_market.indicators.base_indicator.DataColumns.close" href="#nepse_tools.share_market.indicators.base_indicator.DataColumns.close">close</a></code></li>
+<li><code><a title="nepse_tools.share_market.indicators.base_indicator.DataColumns.conf" href="#nepse_tools.share_market.indicators.base_indicator.DataColumns.conf">conf</a></code></li>
+<li><code><a title="nepse_tools.share_market.indicators.base_indicator.DataColumns.date" href="#nepse_tools.share_market.indicators.base_indicator.DataColumns.date">date</a></code></li>
+<li><code><a title="nepse_tools.share_market.indicators.base_indicator.DataColumns.days_120" href="#nepse_tools.share_market.indicators.base_indicator.DataColumns.days_120">days_120</a></code></li>
+<li><code><a title="nepse_tools.share_market.indicators.base_indicator.DataColumns.days_180" href="#nepse_tools.share_market.indicators.base_indicator.DataColumns.days_180">days_180</a></code></li>
+<li><code><a title="nepse_tools.share_market.indicators.base_indicator.DataColumns.diff" href="#nepse_tools.share_market.indicators.base_indicator.DataColumns.diff">diff</a></code></li>
+<li><code><a title="nepse_tools.share_market.indicators.base_indicator.DataColumns.diff_percentage" href="#nepse_tools.share_market.indicators.base_indicator.DataColumns.diff_percentage">diff_percentage</a></code></li>
+<li><code><a title="nepse_tools.share_market.indicators.base_indicator.DataColumns.get_col_from_df" href="#nepse_tools.share_market.indicators.base_indicator.DataColumns.get_col_from_df">get_col_from_df</a></code></li>
+<li><code><a title="nepse_tools.share_market.indicators.base_indicator.DataColumns.high" href="#nepse_tools.share_market.indicators.base_indicator.DataColumns.high">high</a></code></li>
+<li><code><a title="nepse_tools.share_market.indicators.base_indicator.DataColumns.low" href="#nepse_tools.share_market.indicators.base_indicator.DataColumns.low">low</a></code></li>
+<li><code><a title="nepse_tools.share_market.indicators.base_indicator.DataColumns.open" href="#nepse_tools.share_market.indicators.base_indicator.DataColumns.open">open</a></code></li>
+<li><code><a title="nepse_tools.share_market.indicators.base_indicator.DataColumns.prev_close" href="#nepse_tools.share_market.indicators.base_indicator.DataColumns.prev_close">prev_close</a></code></li>
+<li><code><a title="nepse_tools.share_market.indicators.base_indicator.DataColumns.range" href="#nepse_tools.share_market.indicators.base_indicator.DataColumns.range">range</a></code></li>
+<li><code><a title="nepse_tools.share_market.indicators.base_indicator.DataColumns.range_percentage" href="#nepse_tools.share_market.indicators.base_indicator.DataColumns.range_percentage">range_percentage</a></code></li>
+<li><code><a title="nepse_tools.share_market.indicators.base_indicator.DataColumns.sno" href="#nepse_tools.share_market.indicators.base_indicator.DataColumns.sno">sno</a></code></li>
+<li><code><a title="nepse_tools.share_market.indicators.base_indicator.DataColumns.symbol" href="#nepse_tools.share_market.indicators.base_indicator.DataColumns.symbol">symbol</a></code></li>
+<li><code><a title="nepse_tools.share_market.indicators.base_indicator.DataColumns.time" href="#nepse_tools.share_market.indicators.base_indicator.DataColumns.time">time</a></code></li>
+<li><code><a title="nepse_tools.share_market.indicators.base_indicator.DataColumns.trans" href="#nepse_tools.share_market.indicators.base_indicator.DataColumns.trans">trans</a></code></li>
+<li><code><a title="nepse_tools.share_market.indicators.base_indicator.DataColumns.turnover" href="#nepse_tools.share_market.indicators.base_indicator.DataColumns.turnover">turnover</a></code></li>
+<li><code><a title="nepse_tools.share_market.indicators.base_indicator.DataColumns.vol" href="#nepse_tools.share_market.indicators.base_indicator.DataColumns.vol">vol</a></code></li>
+<li><code><a title="nepse_tools.share_market.indicators.base_indicator.DataColumns.vwap" href="#nepse_tools.share_market.indicators.base_indicator.DataColumns.vwap">vwap</a></code></li>
+<li><code><a title="nepse_tools.share_market.indicators.base_indicator.DataColumns.vwap_percentage" href="#nepse_tools.share_market.indicators.base_indicator.DataColumns.vwap_percentage">vwap_percentage</a></code></li>
+<li><code><a title="nepse_tools.share_market.indicators.base_indicator.DataColumns.weeks_high_52" href="#nepse_tools.share_market.indicators.base_indicator.DataColumns.weeks_high_52">weeks_high_52</a></code></li>
+<li><code><a title="nepse_tools.share_market.indicators.base_indicator.DataColumns.weeks_low_52" href="#nepse_tools.share_market.indicators.base_indicator.DataColumns.weeks_low_52">weeks_low_52</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>
