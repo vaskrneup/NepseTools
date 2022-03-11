@@ -1,3 +1,8 @@
+"""
+API for doing various things on meroshare, if you want to create your own functionality, you can either inherit
+from any of the classes below, or write a mixin to merge with your class.
+"""
+
 import datetime
 import warnings
 from typing import List, Optional
@@ -886,7 +891,7 @@ class MeroShareCore(PlatformManager, SessionManager):
     def login(self) -> dict:
         """
         Logs in the user
-        
+
         Returns:
             login response from meroshare
         """
@@ -935,6 +940,10 @@ class MeroShareCore(PlatformManager, SessionManager):
 
 
 class MeroShareBase(MeroShareCore):
+    """
+    Inherited class of meroshare core to provide additional functionalities.
+    """
+
     # ==================APPLY AND UPDATE IPO=================
     def can_apply_to_ipo(self, ipo_id: int) -> bool:
         """
@@ -1075,7 +1084,7 @@ class MeroShareBase(MeroShareCore):
             size: Number of data per page.
 
         Returns:
-            # TODO: SOMEONE UPDATE PLEASE !!
+            TODO: SOMEONE UPDATE PLEASE !!
 
         """
         resp = self.post(
@@ -1112,7 +1121,7 @@ class MeroShareBase(MeroShareCore):
             size: Number of data per page.
 
         Returns:
-            # TODO: SOMEONE UPDATE PLEASE !!
+            TODO: SOMEONE UPDATE PLEASE !!
 
         """
         resp = self.post(
@@ -1148,7 +1157,7 @@ class MeroShareBase(MeroShareCore):
             company_share_id: Company Share ID from data returned from currently issued shares.
 
         Returns:
-            # TODO: SOMEONE UPDATE PLEASE !!
+            TODO: SOMEONE UPDATE PLEASE !!
 
         """
         resp = self.get(
@@ -1171,7 +1180,7 @@ class MeroShareBase(MeroShareCore):
             application_form_id: Application form id, must have been returned from same method
 
         Returns:
-            # TODO: SOMEONE UPDATE PLEASE !!
+            TODO: SOMEONE UPDATE PLEASE !!
 
         """
         resp = self.get(
@@ -1194,7 +1203,7 @@ class MeroShareBase(MeroShareCore):
             application_form_id: Application form id, must have been returned from same method
 
         Returns:
-            # TODO: SOMEONE UPDATE PLEASE !!
+            TODO: SOMEONE UPDATE PLEASE !!
 
         """
         resp = self.get(
@@ -1217,7 +1226,7 @@ class MeroShareBase(MeroShareCore):
             application_form_id: Application form id, must have been returned from same method
 
         Returns:
-            # TODO: SOMEONE UPDATE PLEASE !!
+            TODO: SOMEONE UPDATE PLEASE !!
 
         """
         try:
@@ -1304,7 +1313,7 @@ class MeroShareBase(MeroShareCore):
             page: page of the data
 
         Returns:
-            # TODO: SOMEONE UPDATE PLEASE !!
+            TODO: SOMEONE UPDATE PLEASE !!
 
         """
         start_date = start_date.strftime("%Y-%m-%d")
@@ -1357,7 +1366,7 @@ class MeroShareBase(MeroShareCore):
             sort_asc: bool value to sort data as ascending.
 
         Returns:
-            # TODO: SOMEONE UPDATE PLEASE !!
+            TODO: SOMEONE UPDATE PLEASE !!
 
         """
         resp = self.post(
@@ -1387,6 +1396,19 @@ class MeroShareBase(MeroShareCore):
             size: int = 200,
             sort_asc: bool = True
     ) -> list[dict]:
+        """
+        Returns a list of dictionary of portfolio data including price and number of shares remaining.
+
+        Args:
+            sort_by: weird parameter choice in API, leave it as default
+            page: page to display
+            size: number of data per page
+            sort_asc: bool value to sort data as ascending.
+
+        Returns:
+            List of dictionaries containing details about the users portfolio.
+
+        """
         resp = self.post(
             self.MY_PORTFOLIO_URL,
             json={
@@ -1411,6 +1433,18 @@ class MeroShareBase(MeroShareCore):
 
     # ==================GETTING SHARE TRANSACTION DETAILS=================
     def get_share_transactions(self, symbol: str = None, page: int = 1, size: int = 200):
+        """
+        Gets the share transaction details from meroshare backend.
+
+        Args:
+            symbol: Symbol | Scrip of share
+            page: Page number of the page to get data from.
+            size: Number of data per page to get.
+
+        Returns:
+            TODO: Someone please write it.
+
+        """
         resp = self.post(
             self.SHARE_TRANSACTIONS_URL,
             json={
@@ -1437,6 +1471,16 @@ class MeroShareBase(MeroShareCore):
 
     # ===================GETTING SHARE PURCHASE SOURCE DETAILS==================
     def get_share_purchase_source_wacc_not_calculated_details(self, symbol: str) -> List[dict]:
+        """
+        Get share purchase source from wacc not calculated details.
+
+        Args:
+            symbol: Scrip of share price.
+
+        Returns:
+            List of dictionary of wacc not calculated.
+
+        """
         resp = self.post(
             self.PURCHASE_SOURCE_WACC_NOT_CALCULATED_URL,
             json={
@@ -1454,6 +1498,16 @@ class MeroShareBase(MeroShareCore):
             )
 
     def get_share_purchase_source_wacc_calculated_details(self, symbol: str) -> dict:
+        """
+        Get share purchase source from wacc calculated details.
+
+        Args:
+            symbol: Scrip of share price.
+
+        Returns:
+            List of dictionary of wacc not calculated.
+
+        """
         resp = self.post(
             self.PURCHASE_SOURCE_WACC_CALCULATED_URL,
             json={
@@ -1471,6 +1525,16 @@ class MeroShareBase(MeroShareCore):
             )
 
     def do_wacc_calculation_from_wacc_not_calculated_list(self, wacc_not_calculated_list_data: list[dict]) -> dict:
+        """
+        gets the dictionary of wacc not calculated list.
+
+        Args:
+            wacc_not_calculated_list_data: Must be a list of wacc not calculated data list.
+
+        Returns:
+            wacc not calculated details.
+
+        """
         if not wacc_not_calculated_list_data:
             raise ValueError(f"`{wacc_not_calculated_list_data=}` cant be a empty list.")
 
@@ -1488,6 +1552,17 @@ class MeroShareBase(MeroShareCore):
             )
 
     def do_wacc_calculation_from_company_symbol(self, symbol: str) -> dict:
+        """
+        Does wacc calculation for the given symbol.
+
+        Args:
+            symbol: Symbol of the company for doing wacc calculation.
+
+        Returns:
+            data returned from wacc calculation backend api.
+
+        """
+
         return self.do_wacc_calculation_from_wacc_not_calculated_list(
             self.get_share_purchase_source_wacc_not_calculated_details(symbol)
         )
@@ -1496,6 +1571,13 @@ class MeroShareBase(MeroShareCore):
 
     # ===================GETTING IPO RESULTS==================
     def get_ipo_result_company_list(self):
+        """
+        Gets ipo result from company list.
+
+        Returns:
+            The ipo result of all applied company list.
+
+        """
 
         resp = self.get(self.IPO_RESULT_COMPANY_LIST_URL)
 
@@ -1515,7 +1597,7 @@ class MeroShareBase(MeroShareCore):
             company_share_id: Company share ID from data gained by `get_ipo_result_company_list`
 
         Returns:
-            # TODO: SOMEONE UPDATE PLEASE !!
+            TODO: SOMEONE UPDATE PLEASE !!
 
         """
         resp = requests.post(
@@ -1538,4 +1620,8 @@ class MeroShareBase(MeroShareCore):
 
 
 class MeroShare(MeroShareBase):
+    """
+    Main Meroshare class to provide all the required features, inherit from it if you want to have all features.
+    You can add mixins with this class to create powerful functionality.
+    """
     pass
