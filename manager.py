@@ -64,7 +64,7 @@ def notifier():
     print(bulk_notifier.run())
 
 
-meroshare()
+# meroshare()
 # notifier()
 # price_scraper()
-# ma_test()
+ma_test()

@@ -6,7 +6,6 @@ import pandas as pd
 from decouple import config
 
 from nepse_tools.scraper.price_scraper.scraper import PriceScraper
-from nepse_tools.share_market.indicators.base_indicator import DataColumns
 from nepse_tools.utils.logger import logger
 
 
@@ -26,6 +25,8 @@ def date_range(start: str | datetime.date, end: str | datetime.date = datetime.d
 
 
 def save_data_to_csv(date_generator: Iterable | None = None, csv_path: str = config("SHARE_PRICE_STORAGE_LOCATION")):
+    from nepse_tools.share_market.indicators.base_indicator import DataColumns
+
     price_scraper = PriceScraper()
     scraped_data = {
         key: [] for key in price_scraper.share_price_keys

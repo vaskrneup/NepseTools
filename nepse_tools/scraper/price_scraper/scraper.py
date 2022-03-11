@@ -30,7 +30,7 @@ class PriceScraper:
     def convert_to_float(text: str):
         try:
             return round(float(text), 2)
-        except ValueError:
+        except (ValueError, TypeError):
             return 0.0
 
     @staticmethod
