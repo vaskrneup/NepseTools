@@ -31,7 +31,7 @@
 
 class ClientIdData(typing.TypedDict):
     &#34;&#34;&#34;
-    Dict For data
+    Dict typehint for client id data.
     &#34;&#34;&#34;
     code: str
     id: int
@@ -39,6 +39,9 @@ class ClientIdData(typing.TypedDict):
 
 
 class InitialDataOwnData(typing.TypedDict):
+    &#34;&#34;&#34;
+    Dict typehint for the data that initially loads.
+    &#34;&#34;&#34;
     address: str
     boid: str
     clientCode: str
@@ -68,6 +71,9 @@ class InitialDataOwnData(typing.TypedDict):
 
 
 class MyDetailsFromBank(typing.TypedDict):
+    &#34;&#34;&#34;
+    Dict typehint for my details from bank.
+    &#34;&#34;&#34;
     accountNumber: str
     accountOpenDate: str
     accountStatus: int
@@ -99,61 +105,10 @@ class MyDetailsFromBank(typing.TypedDict):
     suspensionFlag: int
 
 
-x = {
-    &#39;kycDetail&#39;: {
-        &#39;accountOpenDate&#39;: &#39;2017-01-06T00:00:00Z&#39;,
-        &#39;address&#39;: &#39;Jhapa-MECHI, NEPAL,BIRTAMODE-RAJGADH-8, JHAPA,Nepal&#39;,
-        &#39;capitalId&#39;: 175,
-        &#39;citizenshipNumber&#39;: &#39;04-01-75-00081&#39;,
-        &#39;contactNumber&#39;: &#39;9852673625, 9852673625&#39;,
-        &#39;customerType&#39;: {
-            &#39;code&#39;: &#39;21&#39;, &#39;id&#39;: 1, &#39;name&#39;: &#39;INDIVIDUAL&#39;
-        },
-        &#39;dateOfBirth&#39;: &#39;2001-11-18&#39;,
-        &#39;demat&#39;: &#39;1301100000351247&#39;,
-        &#39;expiryDateBS&#39;: &#39;2079-03-32&#39;,
-        &#39;fatherMotherName&#39;: &#39;JIVANATH NEUPANE&#39;,
-        &#39;gender&#39;: &#39;M&#39;,
-        &#39;grandfatherSpouseName&#39;: &#39;DATARAM NEUPANE&#39;,
-        &#39;id&#39;: 293255,
-        &#39;issuedDate&#39;: &#39;2018&#39;,
-        &#39;issuedFrom&#39;: &#39;JHAPA&#39;,
-        &#39;name&#39;: &#39;BHASKAR  NEUPANE&#39;,
-        &#39;occupation&#39;: &#39;&#39;,
-        &#39;pendingRenewalYear&#39;: 0
-    },
-    &#39;modifiedBy&#39;: {
-        &#39;branchDto&#39;: {&#39;code&#39;: &#39;28&#39;, &#39;id&#39;: 3782, &#39;name&#39;: &#39;NMB Bank Ltd.-Birtamod Branch&#39;},
-        &#39;clientDto&#39;: {&#39;code&#39;: &#39;2501&#39;, &#39;id&#39;: 45, &#39;name&#39;: &#39;NMB BANK LTD.&#39;},
-        &#39;email&#39;: &#39;asba@nmb.com.np&#39;,
-        &#39;id&#39;: 16119,
-        &#39;isBlocked&#39;: False,
-        &#39;name&#39;: &#39;BIRTAMOD MAKER 1A&#39;,
-        &#39;profile&#39;: {
-            &#39;belongsTo&#39;: {&#39;id&#39;: 4, &#39;name&#39;: &#39;BRANCH&#39;},
-            &#39;createdDate&#39;: &#39;2019-10-13T05:51:30Z&#39;,
-            &#39;description&#39;: &#39;BRANCH MAKER PROFILE&#39;,
-            &#39;id&#39;: 5,
-            &#39;name&#39;: &#39;BRANCH_MAKER_PROFILE&#39;,
-            &#39;statusDto&#39;: {
-                &#39;description&#39;: &#39;CREATED&#39;, &#39;icon&#39;: &#39;create-approve&#39;, &#39;id&#39;: 6,
-                &#39;name&#39;: &#39;CREATE_APPROVE&#39;
-            }
-        },
-        &#39;statusDto&#39;: {
-            &#39;description&#39;: &#39;DELETED&#39;,
-            &#39;icon&#39;: &#39;deleted-approve&#39;,
-            &#39;id&#39;: 11,
-            &#39;name&#39;: &#39;DELETED_APPROVE&#39;
-        },
-        &#39;username&#39;: &#39;B-2501-28-BIRTAMOD1A&#39;
-    },
-    &#39;name&#39;: &#39;BHASKAR NEUPANE&#39;,
-    &#39;status&#39;: {&#39;description&#39;: &#39;CREATED&#39;, &#39;icon&#39;: &#39;create-approve&#39;, &#39;id&#39;: 6, &#39;name&#39;: &#39;CREATE_APPROVE&#39;}
-}
-
-
 class BankRequestData(typing.TypedDict):
+    &#34;&#34;&#34;
+    Dict typehint for data from bank request data.
+    &#34;&#34;&#34;
     accountBranch: dict
     accountName: str
     accountNumber: str
@@ -172,12 +127,18 @@ class BankRequestData(typing.TypedDict):
 
 
 class BankListView(typing.TypedDict):
+    &#34;&#34;&#34;
+    Dict Typehint for data gained about users bank.
+    &#34;&#34;&#34;
     code: str
     id: int
     name: str
 
 
 class BankDetailView(typing.TypedDict):
+    &#34;&#34;&#34;
+    Dict Typehint for detailed data gained from bank.
+    &#34;&#34;&#34;
     accountBranchId: int
     accountNumber: str
     bankId: int
@@ -200,22 +161,15 @@ class BankDetailView(typing.TypedDict):
 <span>(</span><span>*args, **kwargs)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>dict() -&gt; new empty dictionary
-dict(mapping) -&gt; new dictionary initialized from a mapping object's
-(key, value) pairs
-dict(iterable) -&gt; new dictionary initialized as if via:
-d = {}
-for k, v in iterable:
-d[k] = v
-dict(**kwargs) -&gt; new dictionary initialized with the name=value pairs
-in the keyword argument list.
-For example:
-dict(one=1, two=2)</p></div>
+<div class="desc"><p>Dict Typehint for detailed data gained from bank.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class BankDetailView(typing.TypedDict):
+    &#34;&#34;&#34;
+    Dict Typehint for detailed data gained from bank.
+    &#34;&#34;&#34;
     accountBranchId: int
     accountNumber: str
     bankId: int
@@ -260,22 +214,15 @@ dict(one=1, two=2)</p></div>
 <span>(</span><span>*args, **kwargs)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>dict() -&gt; new empty dictionary
-dict(mapping) -&gt; new dictionary initialized from a mapping object's
-(key, value) pairs
-dict(iterable) -&gt; new dictionary initialized as if via:
-d = {}
-for k, v in iterable:
-d[k] = v
-dict(**kwargs) -&gt; new dictionary initialized with the name=value pairs
-in the keyword argument list.
-For example:
-dict(one=1, two=2)</p></div>
+<div class="desc"><p>Dict Typehint for data gained about users bank.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class BankListView(typing.TypedDict):
+    &#34;&#34;&#34;
+    Dict Typehint for data gained about users bank.
+    &#34;&#34;&#34;
     code: str
     id: int
     name: str</code></pre>
@@ -305,22 +252,15 @@ dict(one=1, two=2)</p></div>
 <span>(</span><span>*args, **kwargs)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>dict() -&gt; new empty dictionary
-dict(mapping) -&gt; new dictionary initialized from a mapping object's
-(key, value) pairs
-dict(iterable) -&gt; new dictionary initialized as if via:
-d = {}
-for k, v in iterable:
-d[k] = v
-dict(**kwargs) -&gt; new dictionary initialized with the name=value pairs
-in the keyword argument list.
-For example:
-dict(one=1, two=2)</p></div>
+<div class="desc"><p>Dict typehint for data from bank request data.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class BankRequestData(typing.TypedDict):
+    &#34;&#34;&#34;
+    Dict typehint for data from bank request data.
+    &#34;&#34;&#34;
     accountBranch: dict
     accountName: str
     accountNumber: str
@@ -410,14 +350,14 @@ dict(one=1, two=2)</p></div>
 <span>(</span><span>*args, **kwargs)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Dict For data</p></div>
+<div class="desc"><p>Dict typehint for client id data.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class ClientIdData(typing.TypedDict):
     &#34;&#34;&#34;
-    Dict For data
+    Dict typehint for client id data.
     &#34;&#34;&#34;
     code: str
     id: int
@@ -448,22 +388,15 @@ dict(one=1, two=2)</p></div>
 <span>(</span><span>*args, **kwargs)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>dict() -&gt; new empty dictionary
-dict(mapping) -&gt; new dictionary initialized from a mapping object's
-(key, value) pairs
-dict(iterable) -&gt; new dictionary initialized as if via:
-d = {}
-for k, v in iterable:
-d[k] = v
-dict(**kwargs) -&gt; new dictionary initialized with the name=value pairs
-in the keyword argument list.
-For example:
-dict(one=1, two=2)</p></div>
+<div class="desc"><p>Dict typehint for the data that initially loads.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class InitialDataOwnData(typing.TypedDict):
+    &#34;&#34;&#34;
+    Dict typehint for the data that initially loads.
+    &#34;&#34;&#34;
     address: str
     boid: str
     clientCode: str
@@ -608,22 +541,15 @@ dict(one=1, two=2)</p></div>
 <span>(</span><span>*args, **kwargs)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>dict() -&gt; new empty dictionary
-dict(mapping) -&gt; new dictionary initialized from a mapping object's
-(key, value) pairs
-dict(iterable) -&gt; new dictionary initialized as if via:
-d = {}
-for k, v in iterable:
-d[k] = v
-dict(**kwargs) -&gt; new dictionary initialized with the name=value pairs
-in the keyword argument list.
-For example:
-dict(one=1, two=2)</p></div>
+<div class="desc"><p>Dict typehint for my details from bank.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class MyDetailsFromBank(typing.TypedDict):
+    &#34;&#34;&#34;
+    Dict typehint for my details from bank.
+    &#34;&#34;&#34;
     accountNumber: str
     accountOpenDate: str
     accountStatus: int

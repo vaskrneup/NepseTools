@@ -30,26 +30,44 @@
 
 
 class MeroshareBaseException(NepseToolsBaseException):
+    &#34;&#34;&#34;
+    Base Exception for meroshare, Every exception raised by meroshare must inherit from this Exception.
+    &#34;&#34;&#34;
     pass
 
 
 class MeroshareDataLoadError(MeroshareBaseException):
+    &#34;&#34;&#34;
+    Exception raised when api request to Meroshare backend fails.
+    &#34;&#34;&#34;
     pass
 
 
 class MeroshareLoginError(MeroshareBaseException):
+    &#34;&#34;&#34;
+    Exception raised when performing authentication related tasks.
+    &#34;&#34;&#34;
     pass
 
 
 class MeroshareShareApplicationError(MeroshareBaseException):
+    &#34;&#34;&#34;
+    Exception raised when Application Error is encountered.
+    &#34;&#34;&#34;
     pass
 
 
 class MeroshareClientIDNotFoundError(MeroshareBaseException):
+    &#34;&#34;&#34;
+    Exception raised when client ID is not found, when using `DP` to find the client ID.
+    &#34;&#34;&#34;
     pass
 
 
 class MeroshareCredentialChangeError(MeroshareBaseException):
+    &#34;&#34;&#34;
+    Exception raised when changing of pin or password is not successful.
+    &#34;&#34;&#34;
     pass</code></pre>
 </details>
 </section>
@@ -67,12 +85,15 @@ class MeroshareCredentialChangeError(MeroshareBaseException):
 <span>(</span><span>*args, error_data: Any = None)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Common base class for all non-exit exceptions.</p></div>
+<div class="desc"><p>Base Exception for meroshare, Every exception raised by meroshare must inherit from this Exception.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class MeroshareBaseException(NepseToolsBaseException):
+    &#34;&#34;&#34;
+    Base Exception for meroshare, Every exception raised by meroshare must inherit from this Exception.
+    &#34;&#34;&#34;
     pass</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -95,12 +116,15 @@ class MeroshareCredentialChangeError(MeroshareBaseException):
 <span>(</span><span>*args, error_data: Any = None)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Common base class for all non-exit exceptions.</p></div>
+<div class="desc"><p>Exception raised when client ID is not found, when using <code>DP</code> to find the client ID.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class MeroshareClientIDNotFoundError(MeroshareBaseException):
+    &#34;&#34;&#34;
+    Exception raised when client ID is not found, when using `DP` to find the client ID.
+    &#34;&#34;&#34;
     pass</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -116,12 +140,15 @@ class MeroshareCredentialChangeError(MeroshareBaseException):
 <span>(</span><span>*args, error_data: Any = None)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Common base class for all non-exit exceptions.</p></div>
+<div class="desc"><p>Exception raised when changing of pin or password is not successful.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class MeroshareCredentialChangeError(MeroshareBaseException):
+    &#34;&#34;&#34;
+    Exception raised when changing of pin or password is not successful.
+    &#34;&#34;&#34;
     pass</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -137,12 +164,15 @@ class MeroshareCredentialChangeError(MeroshareBaseException):
 <span>(</span><span>*args, error_data: Any = None)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Common base class for all non-exit exceptions.</p></div>
+<div class="desc"><p>Exception raised when api request to Meroshare backend fails.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class MeroshareDataLoadError(MeroshareBaseException):
+    &#34;&#34;&#34;
+    Exception raised when api request to Meroshare backend fails.
+    &#34;&#34;&#34;
     pass</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -158,12 +188,15 @@ class MeroshareCredentialChangeError(MeroshareBaseException):
 <span>(</span><span>*args, error_data: Any = None)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Common base class for all non-exit exceptions.</p></div>
+<div class="desc"><p>Exception raised when performing authentication related tasks.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class MeroshareLoginError(MeroshareBaseException):
+    &#34;&#34;&#34;
+    Exception raised when performing authentication related tasks.
+    &#34;&#34;&#34;
     pass</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -179,12 +212,15 @@ class MeroshareCredentialChangeError(MeroshareBaseException):
 <span>(</span><span>*args, error_data: Any = None)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Common base class for all non-exit exceptions.</p></div>
+<div class="desc"><p>Exception raised when Application Error is encountered.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class MeroshareShareApplicationError(MeroshareBaseException):
+    &#34;&#34;&#34;
+    Exception raised when Application Error is encountered.
+    &#34;&#34;&#34;
     pass</code></pre>
 </details>
 <h3>Ancestors</h3>

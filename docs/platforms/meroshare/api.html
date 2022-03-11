@@ -965,6 +965,14 @@ class MeroShareCore(PlatformManager, SessionManager):
 class MeroShareBase(MeroShareCore):
     # ==================APPLY AND UPDATE IPO=================
     def can_apply_to_ipo(self, ipo_id: int) -&gt; bool:
+        &#34;&#34;&#34;
+        Checks if the current logged-in user is allowed to apply to the ipo or not.
+        Args:
+            ipo_id: ID of the ipo gained from the meroshare API of currently available api.
+
+        Returns: True if allowed to apply else False
+
+        &#34;&#34;&#34;
         resp = self.get(
             self.CAN_APPLY_TO_IPO_CHECK_URL.format(
                 COMPANY_SHARE_ID=ipo_id,
@@ -977,6 +985,12 @@ class MeroShareBase(MeroShareCore):
         return False
 
     def get_applicable_shares(self) -&gt; dict:
+        &#34;&#34;&#34;
+        Provides a Dictionary of applicable shares for the current logged in user.
+
+        Returns: A dict of details related to applicable Shares.
+
+        &#34;&#34;&#34;
         resp = self.post(
             self.APPLICABLE_NEW_IPO_URL,
             json={
@@ -1003,6 +1017,15 @@ class MeroShareBase(MeroShareCore):
             )
 
     def _apply_for_ipo(self, payload: dict):
+        &#34;&#34;&#34;
+        Protected method to apply for IPO, but must have right payload.
+
+        Args:
+            payload: Something from meroshare API !!
+
+        Returns:
+
+        &#34;&#34;&#34;
         resp = self.post(self.IPO_APPLICATION_SUBMISSION_URL, json=payload)
 
         if resp.ok:
@@ -1018,6 +1041,18 @@ class MeroShareBase(MeroShareCore):
             self, company_share_id: int = None, scrip: str = None, auto_apply_all: bool = False,
             number_of_shares: int = 10
     ) -&gt; list[dict] | None:
+        &#34;&#34;&#34;
+        Applies for IPO using the given data.
+
+        Args:
+            company_share_id: Share ID provided by the IPO
+            scrip: Company symbol
+            auto_apply_all: Applies to all the available IPOs, if set True
+            number_of_shares: Number of shares to apply for each IPO, defaults to 10
+
+        Returns:
+
+        &#34;&#34;&#34;
         applicable_shares = self.get_applicable_shares().get(&#34;object&#34;, [])
         responses = []
 
@@ -1060,6 +1095,17 @@ class MeroShareBase(MeroShareCore):
 
     # ==================ABSA RELATED=================
     def get_application_reports(self, page: int = 1, size: int = 200):
+        &#34;&#34;&#34;
+        Gets the application report from meroshare `my absa`.
+
+        Args:
+            page: Page Number to grab data from.
+            size: Number of data per page.
+
+        Returns:
+            # TODO: SOMEONE UPDATE PLEASE !!
+
+        &#34;&#34;&#34;
         resp = self.post(
             self.ABSA_APPLICATION_REPORT_URL,
             json={
@@ -1086,6 +1132,17 @@ class MeroShareBase(MeroShareCore):
             )
 
     def get_old_application_reports(self, page: int = 1, size: int = 200):
+        &#34;&#34;&#34;
+        Gets Old application report from `My Absa` page.
+
+        Args:
+            page: Page Number to grab data from.
+            size: Number of data per page.
+
+        Returns:
+            # TODO: SOMEONE UPDATE PLEASE !!
+
+        &#34;&#34;&#34;
         resp = self.post(
             self.ABSA_OLD_APPLICATION_REPORT_URL,
             json={
@@ -1112,6 +1169,16 @@ class MeroShareBase(MeroShareCore):
             )
 
     def get_ipo_issue_manager_details(self, company_share_id: int):
+        &#34;&#34;&#34;
+        Gets details about hte IPO issue manager and IPO details from meroshare backend API.
+
+        Args:
+            company_share_id: Company Share ID from data returned from currently issued shares.
+
+        Returns:
+            # TODO: SOMEONE UPDATE PLEASE !!
+
+        &#34;&#34;&#34;
         resp = self.get(
             self.ABSA_ISSUE_MANAGER_DETAIL_VIEW_URL.format(COMPANY_SHARE_ID=company_share_id)
         )
@@ -1125,6 +1192,16 @@ class MeroShareBase(MeroShareCore):
             )
 
     def get_new_applied_ipo_details(self, application_form_id: int):
+        &#34;&#34;&#34;
+        Gets details about the new IPOs that is currently applied.
+
+        Args:
+            application_form_id: Application form id, must have been returned from same method
+
+        Returns:
+            # TODO: SOMEONE UPDATE PLEASE !!
+
+        &#34;&#34;&#34;
         resp = self.get(
             self.ABSA_APPLIED_IPO_DETAIL_VIEW_URL.format(APPLICATION_FORM_ID=application_form_id)
         )
@@ -1138,6 +1215,16 @@ class MeroShareBase(MeroShareCore):
             )
 
     def get_old_applied_ipo_details(self, application_form_id: int):
+        &#34;&#34;&#34;
+        Gets details about the old IPOs that is currently applied.
+
+        Args:
+            application_form_id: Application form id, must have been returned from same method
+
+        Returns:
+            # TODO: SOMEONE UPDATE PLEASE !!
+
+        &#34;&#34;&#34;
         resp = self.get(
             self.ABSA_OLD_APPLIED_IPO_DETAIL_VIEW_URL.format(APPLICATION_FORM_ID=application_form_id)
         )
@@ -1151,6 +1238,16 @@ class MeroShareBase(MeroShareCore):
             )
 
     def get_applied_ipo_details(self, application_form_id: int):
+        &#34;&#34;&#34;
+        Gets details of the applied IPOs.
+
+        Args:
+            application_form_id: Application form id, must have been returned from same method
+
+        Returns:
+            # TODO: SOMEONE UPDATE PLEASE !!
+
+        &#34;&#34;&#34;
         try:
             return self.get_new_applied_ipo_details(application_form_id)
         except MeroshareDataLoadError:
@@ -1160,6 +1257,16 @@ class MeroShareBase(MeroShareCore):
 
     # ==================CHANGING ACCOUNT DETAILS=================
     def change_password(self, new_password: str):
+        &#34;&#34;&#34;
+        Change password of meroshare account, but won&#39;t automatically update it in .env
+
+        Args:
+            new_password: New password to set.
+
+        Returns:
+            Response from change password api.
+
+        &#34;&#34;&#34;
         resp = self.post(
             self.PASSWORD_CHANGE_POST_URL,
             json={
@@ -1179,6 +1286,17 @@ class MeroShareBase(MeroShareCore):
             )
 
     def change_pin(self, new_pin: int):
+        &#34;&#34;&#34;
+             Change pin of meroshare account, but won&#39;t automatically update it in .env
+
+             Args:
+                 new_pin: New pin to set.
+
+             Returns:
+                 Response from change pin api.
+
+         &#34;&#34;&#34;
+
         resp = self.post(
             self.PIN_CHANGE_POST_URL,
             json={
@@ -1204,6 +1322,19 @@ class MeroShareBase(MeroShareCore):
             self, start_date: datetime.date, end_date: datetime.date, result_size: int = 200,
             page: int = 1
     ):
+        &#34;&#34;&#34;
+        Gets logs about user activity from meroshare.
+
+        Args:
+            start_date: logs filter, start date
+            end_date: logs filter, end date
+            result_size: number of details to show in result
+            page: page of the data
+
+        Returns:
+            # TODO: SOMEONE UPDATE PLEASE !!
+
+        &#34;&#34;&#34;
         start_date = start_date.strftime(&#34;%Y-%m-%d&#34;)
         end_date = end_date.strftime(&#34;%Y-%m-%d&#34;)
 
@@ -1244,6 +1375,19 @@ class MeroShareBase(MeroShareCore):
             size: int = 200,
             sort_asc: bool = True
     ) -&gt; list[dict]:
+        &#34;&#34;&#34;
+        Gets all the shares that you have.
+
+        Args:
+            sort_by: weird parameter choice in API, leave it as default
+            page: page to display
+            size: number of data per page
+            sort_asc: bool value to sort data as ascending.
+
+        Returns:
+            # TODO: SOMEONE UPDATE PLEASE !!
+
+        &#34;&#34;&#34;
         resp = self.post(
             self.MY_SHARES_URL,
             json={
@@ -1380,6 +1524,7 @@ class MeroShareBase(MeroShareCore):
 
     # ===================GETTING IPO RESULTS==================
     def get_ipo_result_company_list(self):
+
         resp = self.get(self.IPO_RESULT_COMPANY_LIST_URL)
 
         if resp.ok:
@@ -1391,6 +1536,16 @@ class MeroShareBase(MeroShareCore):
             )
 
     def get_ipo_result(self, company_share_id: int) -&gt; dict:
+        &#34;&#34;&#34;
+        Gets the IPO result
+
+        Args:
+            company_share_id: Company share ID from data gained by `get_ipo_result_company_list`
+
+        Returns:
+            # TODO: SOMEONE UPDATE PLEASE !!
+
+        &#34;&#34;&#34;
         resp = requests.post(
             self.IPO_RESULT_CHECK_URL,
             json={
@@ -1460,7 +1615,21 @@ for making the development process much simpler.</p>
 <ul class="hlist">
 <li><code><b><a title="nepse_tools.platforms.meroshare.api.MeroShareBase" href="#nepse_tools.platforms.meroshare.api.MeroShareBase">MeroShareBase</a></b></code>:
 <ul class="hlist">
+<li><code><a title="nepse_tools.platforms.meroshare.api.MeroShareBase.apply_for_ipo" href="#nepse_tools.platforms.meroshare.api.MeroShareBase.apply_for_ipo">apply_for_ipo</a></code></li>
+<li><code><a title="nepse_tools.platforms.meroshare.api.MeroShareBase.can_apply_to_ipo" href="#nepse_tools.platforms.meroshare.api.MeroShareBase.can_apply_to_ipo">can_apply_to_ipo</a></code></li>
+<li><code><a title="nepse_tools.platforms.meroshare.api.MeroShareBase.change_password" href="#nepse_tools.platforms.meroshare.api.MeroShareBase.change_password">change_password</a></code></li>
+<li><code><a title="nepse_tools.platforms.meroshare.api.MeroShareBase.change_pin" href="#nepse_tools.platforms.meroshare.api.MeroShareBase.change_pin">change_pin</a></code></li>
+<li><code><a title="nepse_tools.platforms.meroshare.api.MeroShareBase.get_account_logs" href="#nepse_tools.platforms.meroshare.api.MeroShareBase.get_account_logs">get_account_logs</a></code></li>
+<li><code><a title="nepse_tools.platforms.meroshare.api.MeroShareBase.get_applicable_shares" href="#nepse_tools.platforms.meroshare.api.MeroShareBase.get_applicable_shares">get_applicable_shares</a></code></li>
+<li><code><a title="nepse_tools.platforms.meroshare.api.MeroShareBase.get_application_reports" href="#nepse_tools.platforms.meroshare.api.MeroShareBase.get_application_reports">get_application_reports</a></code></li>
+<li><code><a title="nepse_tools.platforms.meroshare.api.MeroShareBase.get_applied_ipo_details" href="#nepse_tools.platforms.meroshare.api.MeroShareBase.get_applied_ipo_details">get_applied_ipo_details</a></code></li>
 <li><code><a title="nepse_tools.platforms.meroshare.api.MeroShareBase.get_client_id" href="#nepse_tools.platforms.meroshare.api.MeroShareCore.get_client_id">get_client_id</a></code></li>
+<li><code><a title="nepse_tools.platforms.meroshare.api.MeroShareBase.get_ipo_issue_manager_details" href="#nepse_tools.platforms.meroshare.api.MeroShareBase.get_ipo_issue_manager_details">get_ipo_issue_manager_details</a></code></li>
+<li><code><a title="nepse_tools.platforms.meroshare.api.MeroShareBase.get_ipo_result" href="#nepse_tools.platforms.meroshare.api.MeroShareBase.get_ipo_result">get_ipo_result</a></code></li>
+<li><code><a title="nepse_tools.platforms.meroshare.api.MeroShareBase.get_my_shares" href="#nepse_tools.platforms.meroshare.api.MeroShareBase.get_my_shares">get_my_shares</a></code></li>
+<li><code><a title="nepse_tools.platforms.meroshare.api.MeroShareBase.get_new_applied_ipo_details" href="#nepse_tools.platforms.meroshare.api.MeroShareBase.get_new_applied_ipo_details">get_new_applied_ipo_details</a></code></li>
+<li><code><a title="nepse_tools.platforms.meroshare.api.MeroShareBase.get_old_application_reports" href="#nepse_tools.platforms.meroshare.api.MeroShareBase.get_old_application_reports">get_old_application_reports</a></code></li>
+<li><code><a title="nepse_tools.platforms.meroshare.api.MeroShareBase.get_old_applied_ipo_details" href="#nepse_tools.platforms.meroshare.api.MeroShareBase.get_old_applied_ipo_details">get_old_applied_ipo_details</a></code></li>
 <li><code><a title="nepse_tools.platforms.meroshare.api.MeroShareBase.hard__load_all_data" href="#nepse_tools.platforms.meroshare.api.MeroShareCore.hard__load_all_data">hard__load_all_data</a></code></li>
 <li><code><a title="nepse_tools.platforms.meroshare.api.MeroShareBase.load_bank_detail_view" href="#nepse_tools.platforms.meroshare.api.MeroShareCore.load_bank_detail_view">load_bank_detail_view</a></code></li>
 <li><code><a title="nepse_tools.platforms.meroshare.api.MeroShareBase.load_bank_detail_view_if_required" href="#nepse_tools.platforms.meroshare.api.MeroShareCore.load_bank_detail_view_if_required">load_bank_detail_view_if_required</a></code></li>
@@ -1507,6 +1676,14 @@ for making the development process much simpler.</p>
 <pre><code class="python">class MeroShareBase(MeroShareCore):
     # ==================APPLY AND UPDATE IPO=================
     def can_apply_to_ipo(self, ipo_id: int) -&gt; bool:
+        &#34;&#34;&#34;
+        Checks if the current logged-in user is allowed to apply to the ipo or not.
+        Args:
+            ipo_id: ID of the ipo gained from the meroshare API of currently available api.
+
+        Returns: True if allowed to apply else False
+
+        &#34;&#34;&#34;
         resp = self.get(
             self.CAN_APPLY_TO_IPO_CHECK_URL.format(
                 COMPANY_SHARE_ID=ipo_id,
@@ -1519,6 +1696,12 @@ for making the development process much simpler.</p>
         return False
 
     def get_applicable_shares(self) -&gt; dict:
+        &#34;&#34;&#34;
+        Provides a Dictionary of applicable shares for the current logged in user.
+
+        Returns: A dict of details related to applicable Shares.
+
+        &#34;&#34;&#34;
         resp = self.post(
             self.APPLICABLE_NEW_IPO_URL,
             json={
@@ -1545,6 +1728,15 @@ for making the development process much simpler.</p>
             )
 
     def _apply_for_ipo(self, payload: dict):
+        &#34;&#34;&#34;
+        Protected method to apply for IPO, but must have right payload.
+
+        Args:
+            payload: Something from meroshare API !!
+
+        Returns:
+
+        &#34;&#34;&#34;
         resp = self.post(self.IPO_APPLICATION_SUBMISSION_URL, json=payload)
 
         if resp.ok:
@@ -1560,6 +1752,18 @@ for making the development process much simpler.</p>
             self, company_share_id: int = None, scrip: str = None, auto_apply_all: bool = False,
             number_of_shares: int = 10
     ) -&gt; list[dict] | None:
+        &#34;&#34;&#34;
+        Applies for IPO using the given data.
+
+        Args:
+            company_share_id: Share ID provided by the IPO
+            scrip: Company symbol
+            auto_apply_all: Applies to all the available IPOs, if set True
+            number_of_shares: Number of shares to apply for each IPO, defaults to 10
+
+        Returns:
+
+        &#34;&#34;&#34;
         applicable_shares = self.get_applicable_shares().get(&#34;object&#34;, [])
         responses = []
 
@@ -1602,6 +1806,17 @@ for making the development process much simpler.</p>
 
     # ==================ABSA RELATED=================
     def get_application_reports(self, page: int = 1, size: int = 200):
+        &#34;&#34;&#34;
+        Gets the application report from meroshare `my absa`.
+
+        Args:
+            page: Page Number to grab data from.
+            size: Number of data per page.
+
+        Returns:
+            # TODO: SOMEONE UPDATE PLEASE !!
+
+        &#34;&#34;&#34;
         resp = self.post(
             self.ABSA_APPLICATION_REPORT_URL,
             json={
@@ -1628,6 +1843,17 @@ for making the development process much simpler.</p>
             )
 
     def get_old_application_reports(self, page: int = 1, size: int = 200):
+        &#34;&#34;&#34;
+        Gets Old application report from `My Absa` page.
+
+        Args:
+            page: Page Number to grab data from.
+            size: Number of data per page.
+
+        Returns:
+            # TODO: SOMEONE UPDATE PLEASE !!
+
+        &#34;&#34;&#34;
         resp = self.post(
             self.ABSA_OLD_APPLICATION_REPORT_URL,
             json={
@@ -1654,6 +1880,16 @@ for making the development process much simpler.</p>
             )
 
     def get_ipo_issue_manager_details(self, company_share_id: int):
+        &#34;&#34;&#34;
+        Gets details about hte IPO issue manager and IPO details from meroshare backend API.
+
+        Args:
+            company_share_id: Company Share ID from data returned from currently issued shares.
+
+        Returns:
+            # TODO: SOMEONE UPDATE PLEASE !!
+
+        &#34;&#34;&#34;
         resp = self.get(
             self.ABSA_ISSUE_MANAGER_DETAIL_VIEW_URL.format(COMPANY_SHARE_ID=company_share_id)
         )
@@ -1667,6 +1903,16 @@ for making the development process much simpler.</p>
             )
 
     def get_new_applied_ipo_details(self, application_form_id: int):
+        &#34;&#34;&#34;
+        Gets details about the new IPOs that is currently applied.
+
+        Args:
+            application_form_id: Application form id, must have been returned from same method
+
+        Returns:
+            # TODO: SOMEONE UPDATE PLEASE !!
+
+        &#34;&#34;&#34;
         resp = self.get(
             self.ABSA_APPLIED_IPO_DETAIL_VIEW_URL.format(APPLICATION_FORM_ID=application_form_id)
         )
@@ -1680,6 +1926,16 @@ for making the development process much simpler.</p>
             )
 
     def get_old_applied_ipo_details(self, application_form_id: int):
+        &#34;&#34;&#34;
+        Gets details about the old IPOs that is currently applied.
+
+        Args:
+            application_form_id: Application form id, must have been returned from same method
+
+        Returns:
+            # TODO: SOMEONE UPDATE PLEASE !!
+
+        &#34;&#34;&#34;
         resp = self.get(
             self.ABSA_OLD_APPLIED_IPO_DETAIL_VIEW_URL.format(APPLICATION_FORM_ID=application_form_id)
         )
@@ -1693,6 +1949,16 @@ for making the development process much simpler.</p>
             )
 
     def get_applied_ipo_details(self, application_form_id: int):
+        &#34;&#34;&#34;
+        Gets details of the applied IPOs.
+
+        Args:
+            application_form_id: Application form id, must have been returned from same method
+
+        Returns:
+            # TODO: SOMEONE UPDATE PLEASE !!
+
+        &#34;&#34;&#34;
         try:
             return self.get_new_applied_ipo_details(application_form_id)
         except MeroshareDataLoadError:
@@ -1702,6 +1968,16 @@ for making the development process much simpler.</p>
 
     # ==================CHANGING ACCOUNT DETAILS=================
     def change_password(self, new_password: str):
+        &#34;&#34;&#34;
+        Change password of meroshare account, but won&#39;t automatically update it in .env
+
+        Args:
+            new_password: New password to set.
+
+        Returns:
+            Response from change password api.
+
+        &#34;&#34;&#34;
         resp = self.post(
             self.PASSWORD_CHANGE_POST_URL,
             json={
@@ -1721,6 +1997,17 @@ for making the development process much simpler.</p>
             )
 
     def change_pin(self, new_pin: int):
+        &#34;&#34;&#34;
+             Change pin of meroshare account, but won&#39;t automatically update it in .env
+
+             Args:
+                 new_pin: New pin to set.
+
+             Returns:
+                 Response from change pin api.
+
+         &#34;&#34;&#34;
+
         resp = self.post(
             self.PIN_CHANGE_POST_URL,
             json={
@@ -1746,6 +2033,19 @@ for making the development process much simpler.</p>
             self, start_date: datetime.date, end_date: datetime.date, result_size: int = 200,
             page: int = 1
     ):
+        &#34;&#34;&#34;
+        Gets logs about user activity from meroshare.
+
+        Args:
+            start_date: logs filter, start date
+            end_date: logs filter, end date
+            result_size: number of details to show in result
+            page: page of the data
+
+        Returns:
+            # TODO: SOMEONE UPDATE PLEASE !!
+
+        &#34;&#34;&#34;
         start_date = start_date.strftime(&#34;%Y-%m-%d&#34;)
         end_date = end_date.strftime(&#34;%Y-%m-%d&#34;)
 
@@ -1786,6 +2086,19 @@ for making the development process much simpler.</p>
             size: int = 200,
             sort_asc: bool = True
     ) -&gt; list[dict]:
+        &#34;&#34;&#34;
+        Gets all the shares that you have.
+
+        Args:
+            sort_by: weird parameter choice in API, leave it as default
+            page: page to display
+            size: number of data per page
+            sort_asc: bool value to sort data as ascending.
+
+        Returns:
+            # TODO: SOMEONE UPDATE PLEASE !!
+
+        &#34;&#34;&#34;
         resp = self.post(
             self.MY_SHARES_URL,
             json={
@@ -1922,6 +2235,7 @@ for making the development process much simpler.</p>
 
     # ===================GETTING IPO RESULTS==================
     def get_ipo_result_company_list(self):
+
         resp = self.get(self.IPO_RESULT_COMPANY_LIST_URL)
 
         if resp.ok:
@@ -1933,6 +2247,16 @@ for making the development process much simpler.</p>
             )
 
     def get_ipo_result(self, company_share_id: int) -&gt; dict:
+        &#34;&#34;&#34;
+        Gets the IPO result
+
+        Args:
+            company_share_id: Company share ID from data gained by `get_ipo_result_company_list`
+
+        Returns:
+            # TODO: SOMEONE UPDATE PLEASE !!
+
+        &#34;&#34;&#34;
         resp = requests.post(
             self.IPO_RESULT_CHECK_URL,
             json={
@@ -1967,7 +2291,19 @@ for making the development process much simpler.</p>
 <span>def <span class="ident">apply_for_ipo</span></span>(<span>self, company_share_id: int = None, scrip: str = None, auto_apply_all: bool = False, number_of_shares: int = 10) ‑> list[dict] | None</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Applies for IPO using the given data.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>company_share_id</code></strong></dt>
+<dd>Share ID provided by the IPO</dd>
+<dt><strong><code>scrip</code></strong></dt>
+<dd>Company symbol</dd>
+<dt><strong><code>auto_apply_all</code></strong></dt>
+<dd>Applies to all the available IPOs, if set True</dd>
+<dt><strong><code>number_of_shares</code></strong></dt>
+<dd>Number of shares to apply for each IPO, defaults to 10</dd>
+</dl>
+<p>Returns:</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1976,6 +2312,18 @@ for making the development process much simpler.</p>
         self, company_share_id: int = None, scrip: str = None, auto_apply_all: bool = False,
         number_of_shares: int = 10
 ) -&gt; list[dict] | None:
+    &#34;&#34;&#34;
+    Applies for IPO using the given data.
+
+    Args:
+        company_share_id: Share ID provided by the IPO
+        scrip: Company symbol
+        auto_apply_all: Applies to all the available IPOs, if set True
+        number_of_shares: Number of shares to apply for each IPO, defaults to 10
+
+    Returns:
+
+    &#34;&#34;&#34;
     applicable_shares = self.get_applicable_shares().get(&#34;object&#34;, [])
     responses = []
 
@@ -2019,12 +2367,26 @@ for making the development process much simpler.</p>
 <span>def <span class="ident">can_apply_to_ipo</span></span>(<span>self, ipo_id: int) ‑> bool</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Checks if the current logged-in user is allowed to apply to the ipo or not.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>ipo_id</code></strong></dt>
+<dd>ID of the ipo gained from the meroshare API of currently available api.</dd>
+</dl>
+<p>Returns: True if allowed to apply else False</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def can_apply_to_ipo(self, ipo_id: int) -&gt; bool:
+    &#34;&#34;&#34;
+    Checks if the current logged-in user is allowed to apply to the ipo or not.
+    Args:
+        ipo_id: ID of the ipo gained from the meroshare API of currently available api.
+
+    Returns: True if allowed to apply else False
+
+    &#34;&#34;&#34;
     resp = self.get(
         self.CAN_APPLY_TO_IPO_CHECK_URL.format(
             COMPANY_SHARE_ID=ipo_id,
@@ -2041,12 +2403,29 @@ for making the development process much simpler.</p>
 <span>def <span class="ident">change_password</span></span>(<span>self, new_password: str)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Change password of meroshare account, but won't automatically update it in .env</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>new_password</code></strong></dt>
+<dd>New password to set.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>Response from change password api.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def change_password(self, new_password: str):
+    &#34;&#34;&#34;
+    Change password of meroshare account, but won&#39;t automatically update it in .env
+
+    Args:
+        new_password: New password to set.
+
+    Returns:
+        Response from change password api.
+
+    &#34;&#34;&#34;
     resp = self.post(
         self.PASSWORD_CHANGE_POST_URL,
         json={
@@ -2070,12 +2449,30 @@ for making the development process much simpler.</p>
 <span>def <span class="ident">change_pin</span></span>(<span>self, new_pin: int)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Change pin of meroshare account, but won't automatically update it in .env</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>new_pin</code></strong></dt>
+<dd>New pin to set.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>Response from change pin api.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def change_pin(self, new_pin: int):
+    &#34;&#34;&#34;
+         Change pin of meroshare account, but won&#39;t automatically update it in .env
+
+         Args:
+             new_pin: New pin to set.
+
+         Returns:
+             Response from change pin api.
+
+     &#34;&#34;&#34;
+
     resp = self.post(
         self.PIN_CHANGE_POST_URL,
         json={
@@ -2141,7 +2538,20 @@ for making the development process much simpler.</p>
 <span>def <span class="ident">get_account_logs</span></span>(<span>self, start_date: datetime.date, end_date: datetime.date, result_size: int = 200, page: int = 1)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Gets logs about user activity from meroshare.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>start_date</code></strong></dt>
+<dd>logs filter, start date</dd>
+<dt><strong><code>end_date</code></strong></dt>
+<dd>logs filter, end date</dd>
+<dt><strong><code>result_size</code></strong></dt>
+<dd>number of details to show in result</dd>
+<dt><strong><code>page</code></strong></dt>
+<dd>page of the data</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<h1 id="todo-someone-update-please">TODO: SOMEONE UPDATE PLEASE !!</h1></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -2150,6 +2560,19 @@ for making the development process much simpler.</p>
         self, start_date: datetime.date, end_date: datetime.date, result_size: int = 200,
         page: int = 1
 ):
+    &#34;&#34;&#34;
+    Gets logs about user activity from meroshare.
+
+    Args:
+        start_date: logs filter, start date
+        end_date: logs filter, end date
+        result_size: number of details to show in result
+        page: page of the data
+
+    Returns:
+        # TODO: SOMEONE UPDATE PLEASE !!
+
+    &#34;&#34;&#34;
     start_date = start_date.strftime(&#34;%Y-%m-%d&#34;)
     end_date = end_date.strftime(&#34;%Y-%m-%d&#34;)
 
@@ -2185,12 +2608,19 @@ for making the development process much simpler.</p>
 <span>def <span class="ident">get_applicable_shares</span></span>(<span>self) ‑> dict</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Provides a Dictionary of applicable shares for the current logged in user.</p>
+<p>Returns: A dict of details related to applicable Shares.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def get_applicable_shares(self) -&gt; dict:
+    &#34;&#34;&#34;
+    Provides a Dictionary of applicable shares for the current logged in user.
+
+    Returns: A dict of details related to applicable Shares.
+
+    &#34;&#34;&#34;
     resp = self.post(
         self.APPLICABLE_NEW_IPO_URL,
         json={
@@ -2221,12 +2651,32 @@ for making the development process much simpler.</p>
 <span>def <span class="ident">get_application_reports</span></span>(<span>self, page: int = 1, size: int = 200)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Gets the application report from meroshare <code>my absa</code>.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>page</code></strong></dt>
+<dd>Page Number to grab data from.</dd>
+<dt><strong><code>size</code></strong></dt>
+<dd>Number of data per page.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<h1 id="todo-someone-update-please">TODO: SOMEONE UPDATE PLEASE !!</h1></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def get_application_reports(self, page: int = 1, size: int = 200):
+    &#34;&#34;&#34;
+    Gets the application report from meroshare `my absa`.
+
+    Args:
+        page: Page Number to grab data from.
+        size: Number of data per page.
+
+    Returns:
+        # TODO: SOMEONE UPDATE PLEASE !!
+
+    &#34;&#34;&#34;
     resp = self.post(
         self.ABSA_APPLICATION_REPORT_URL,
         json={
@@ -2257,12 +2707,29 @@ for making the development process much simpler.</p>
 <span>def <span class="ident">get_applied_ipo_details</span></span>(<span>self, application_form_id: int)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Gets details of the applied IPOs.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>application_form_id</code></strong></dt>
+<dd>Application form id, must have been returned from same method</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<h1 id="todo-someone-update-please">TODO: SOMEONE UPDATE PLEASE !!</h1></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def get_applied_ipo_details(self, application_form_id: int):
+    &#34;&#34;&#34;
+    Gets details of the applied IPOs.
+
+    Args:
+        application_form_id: Application form id, must have been returned from same method
+
+    Returns:
+        # TODO: SOMEONE UPDATE PLEASE !!
+
+    &#34;&#34;&#34;
     try:
         return self.get_new_applied_ipo_details(application_form_id)
     except MeroshareDataLoadError:
@@ -2273,12 +2740,29 @@ for making the development process much simpler.</p>
 <span>def <span class="ident">get_ipo_issue_manager_details</span></span>(<span>self, company_share_id: int)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Gets details about hte IPO issue manager and IPO details from meroshare backend API.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>company_share_id</code></strong></dt>
+<dd>Company Share ID from data returned from currently issued shares.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<h1 id="todo-someone-update-please">TODO: SOMEONE UPDATE PLEASE !!</h1></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def get_ipo_issue_manager_details(self, company_share_id: int):
+    &#34;&#34;&#34;
+    Gets details about hte IPO issue manager and IPO details from meroshare backend API.
+
+    Args:
+        company_share_id: Company Share ID from data returned from currently issued shares.
+
+    Returns:
+        # TODO: SOMEONE UPDATE PLEASE !!
+
+    &#34;&#34;&#34;
     resp = self.get(
         self.ABSA_ISSUE_MANAGER_DETAIL_VIEW_URL.format(COMPANY_SHARE_ID=company_share_id)
     )
@@ -2296,12 +2780,29 @@ for making the development process much simpler.</p>
 <span>def <span class="ident">get_ipo_result</span></span>(<span>self, company_share_id: int) ‑> dict</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Gets the IPO result</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>company_share_id</code></strong></dt>
+<dd>Company share ID from data gained by <code>get_ipo_result_company_list</code></dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<h1 id="todo-someone-update-please">TODO: SOMEONE UPDATE PLEASE !!</h1></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def get_ipo_result(self, company_share_id: int) -&gt; dict:
+    &#34;&#34;&#34;
+    Gets the IPO result
+
+    Args:
+        company_share_id: Company share ID from data gained by `get_ipo_result_company_list`
+
+    Returns:
+        # TODO: SOMEONE UPDATE PLEASE !!
+
+    &#34;&#34;&#34;
     resp = requests.post(
         self.IPO_RESULT_CHECK_URL,
         json={
@@ -2329,6 +2830,7 @@ for making the development process much simpler.</p>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def get_ipo_result_company_list(self):
+
     resp = self.get(self.IPO_RESULT_COMPANY_LIST_URL)
 
     if resp.ok:
@@ -2381,7 +2883,20 @@ for making the development process much simpler.</p>
 <span>def <span class="ident">get_my_shares</span></span>(<span>self, sort_by: str = 'CCY_SHORT_NAME', page: int = 1, size: int = 200, sort_asc: bool = True) ‑> list</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Gets all the shares that you have.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>sort_by</code></strong></dt>
+<dd>weird parameter choice in API, leave it as default</dd>
+<dt><strong><code>page</code></strong></dt>
+<dd>page to display</dd>
+<dt><strong><code>size</code></strong></dt>
+<dd>number of data per page</dd>
+<dt><strong><code>sort_asc</code></strong></dt>
+<dd>bool value to sort data as ascending.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<h1 id="todo-someone-update-please">TODO: SOMEONE UPDATE PLEASE !!</h1></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -2393,6 +2908,19 @@ for making the development process much simpler.</p>
         size: int = 200,
         sort_asc: bool = True
 ) -&gt; list[dict]:
+    &#34;&#34;&#34;
+    Gets all the shares that you have.
+
+    Args:
+        sort_by: weird parameter choice in API, leave it as default
+        page: page to display
+        size: number of data per page
+        sort_asc: bool value to sort data as ascending.
+
+    Returns:
+        # TODO: SOMEONE UPDATE PLEASE !!
+
+    &#34;&#34;&#34;
     resp = self.post(
         self.MY_SHARES_URL,
         json={
@@ -2418,12 +2946,29 @@ for making the development process much simpler.</p>
 <span>def <span class="ident">get_new_applied_ipo_details</span></span>(<span>self, application_form_id: int)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Gets details about the new IPOs that is currently applied.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>application_form_id</code></strong></dt>
+<dd>Application form id, must have been returned from same method</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<h1 id="todo-someone-update-please">TODO: SOMEONE UPDATE PLEASE !!</h1></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def get_new_applied_ipo_details(self, application_form_id: int):
+    &#34;&#34;&#34;
+    Gets details about the new IPOs that is currently applied.
+
+    Args:
+        application_form_id: Application form id, must have been returned from same method
+
+    Returns:
+        # TODO: SOMEONE UPDATE PLEASE !!
+
+    &#34;&#34;&#34;
     resp = self.get(
         self.ABSA_APPLIED_IPO_DETAIL_VIEW_URL.format(APPLICATION_FORM_ID=application_form_id)
     )
@@ -2441,12 +2986,32 @@ for making the development process much simpler.</p>
 <span>def <span class="ident">get_old_application_reports</span></span>(<span>self, page: int = 1, size: int = 200)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Gets Old application report from <code>My Absa</code> page.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>page</code></strong></dt>
+<dd>Page Number to grab data from.</dd>
+<dt><strong><code>size</code></strong></dt>
+<dd>Number of data per page.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<h1 id="todo-someone-update-please">TODO: SOMEONE UPDATE PLEASE !!</h1></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def get_old_application_reports(self, page: int = 1, size: int = 200):
+    &#34;&#34;&#34;
+    Gets Old application report from `My Absa` page.
+
+    Args:
+        page: Page Number to grab data from.
+        size: Number of data per page.
+
+    Returns:
+        # TODO: SOMEONE UPDATE PLEASE !!
+
+    &#34;&#34;&#34;
     resp = self.post(
         self.ABSA_OLD_APPLICATION_REPORT_URL,
         json={
@@ -2477,12 +3042,29 @@ for making the development process much simpler.</p>
 <span>def <span class="ident">get_old_applied_ipo_details</span></span>(<span>self, application_form_id: int)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Gets details about the old IPOs that is currently applied.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>application_form_id</code></strong></dt>
+<dd>Application form id, must have been returned from same method</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<h1 id="todo-someone-update-please">TODO: SOMEONE UPDATE PLEASE !!</h1></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def get_old_applied_ipo_details(self, application_form_id: int):
+    &#34;&#34;&#34;
+    Gets details about the old IPOs that is currently applied.
+
+    Args:
+        application_form_id: Application form id, must have been returned from same method
+
+    Returns:
+        # TODO: SOMEONE UPDATE PLEASE !!
+
+    &#34;&#34;&#34;
     resp = self.get(
         self.ABSA_OLD_APPLIED_IPO_DETAIL_VIEW_URL.format(APPLICATION_FORM_ID=application_form_id)
     )

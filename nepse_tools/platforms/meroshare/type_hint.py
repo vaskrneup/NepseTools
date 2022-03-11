@@ -3,7 +3,7 @@ import typing
 
 class ClientIdData(typing.TypedDict):
     """
-    Dict For data
+    Dict typehint for client id data.
     """
     code: str
     id: int
@@ -11,6 +11,9 @@ class ClientIdData(typing.TypedDict):
 
 
 class InitialDataOwnData(typing.TypedDict):
+    """
+    Dict typehint for the data that initially loads.
+    """
     address: str
     boid: str
     clientCode: str
@@ -40,6 +43,9 @@ class InitialDataOwnData(typing.TypedDict):
 
 
 class MyDetailsFromBank(typing.TypedDict):
+    """
+    Dict typehint for my details from bank.
+    """
     accountNumber: str
     accountOpenDate: str
     accountStatus: int
@@ -72,6 +78,9 @@ class MyDetailsFromBank(typing.TypedDict):
 
 
 class BankRequestData(typing.TypedDict):
+    """
+    Dict typehint for data from bank request data.
+    """
     accountBranch: dict
     accountName: str
     accountNumber: str
@@ -90,12 +99,18 @@ class BankRequestData(typing.TypedDict):
 
 
 class BankListView(typing.TypedDict):
+    """
+    Dict Typehint for data gained about users bank.
+    """
     code: str
     id: int
     name: str
 
 
 class BankDetailView(typing.TypedDict):
+    """
+    Dict Typehint for detailed data gained from bank.
+    """
     accountBranchId: int
     accountNumber: str
     bankId: int

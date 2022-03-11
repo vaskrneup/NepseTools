@@ -937,6 +937,14 @@ class MeroShareCore(PlatformManager, SessionManager):
 class MeroShareBase(MeroShareCore):
     # ==================APPLY AND UPDATE IPO=================
     def can_apply_to_ipo(self, ipo_id: int) -> bool:
+        """
+        Checks if the current logged-in user is allowed to apply to the ipo or not.
+        Args:
+            ipo_id: ID of the ipo gained from the meroshare API of currently available api.
+
+        Returns: True if allowed to apply else False
+
+        """
         resp = self.get(
             self.CAN_APPLY_TO_IPO_CHECK_URL.format(
                 COMPANY_SHARE_ID=ipo_id,
@@ -949,6 +957,12 @@ class MeroShareBase(MeroShareCore):
         return False
 
     def get_applicable_shares(self) -> dict:
+        """
+        Provides a Dictionary of applicable shares for the current logged in user.
+
+        Returns: A dict of details related to applicable Shares.
+
+        """
         resp = self.post(
             self.APPLICABLE_NEW_IPO_URL,
             json={
@@ -975,6 +989,15 @@ class MeroShareBase(MeroShareCore):
             )
 
     def _apply_for_ipo(self, payload: dict):
+        """
+        Protected method to apply for IPO, but must have right payload.
+
+        Args:
+            payload: Something from meroshare API !!
+
+        Returns:
+
+        """
         resp = self.post(self.IPO_APPLICATION_SUBMISSION_URL, json=payload)
 
         if resp.ok:
@@ -990,6 +1013,18 @@ class MeroShareBase(MeroShareCore):
             self, company_share_id: int = None, scrip: str = None, auto_apply_all: bool = False,
             number_of_shares: int = 10
     ) -> list[dict] | None:
+        """
+        Applies for IPO using the given data.
+
+        Args:
+            company_share_id: Share ID provided by the IPO
+            scrip: Company symbol
+            auto_apply_all: Applies to all the available IPOs, if set True
+            number_of_shares: Number of shares to apply for each IPO, defaults to 10
+
+        Returns:
+
+        """
         applicable_shares = self.get_applicable_shares().get("object", [])
         responses = []
 
@@ -1032,6 +1067,17 @@ class MeroShareBase(MeroShareCore):
 
     # ==================ABSA RELATED=================
     def get_application_reports(self, page: int = 1, size: int = 200):
+        """
+        Gets the application report from meroshare `my absa`.
+
+        Args:
+            page: Page Number to grab data from.
+            size: Number of data per page.
+
+        Returns:
+            # TODO: SOMEONE UPDATE PLEASE !!
+
+        """
         resp = self.post(
             self.ABSA_APPLICATION_REPORT_URL,
             json={
@@ -1058,6 +1104,17 @@ class MeroShareBase(MeroShareCore):
             )
 
     def get_old_application_reports(self, page: int = 1, size: int = 200):
+        """
+        Gets Old application report from `My Absa` page.
+
+        Args:
+            page: Page Number to grab data from.
+            size: Number of data per page.
+
+        Returns:
+            # TODO: SOMEONE UPDATE PLEASE !!
+
+        """
         resp = self.post(
             self.ABSA_OLD_APPLICATION_REPORT_URL,
             json={
@@ -1084,6 +1141,16 @@ class MeroShareBase(MeroShareCore):
             )
 
     def get_ipo_issue_manager_details(self, company_share_id: int):
+        """
+        Gets details about hte IPO issue manager and IPO details from meroshare backend API.
+
+        Args:
+            company_share_id: Company Share ID from data returned from currently issued shares.
+
+        Returns:
+            # TODO: SOMEONE UPDATE PLEASE !!
+
+        """
         resp = self.get(
             self.ABSA_ISSUE_MANAGER_DETAIL_VIEW_URL.format(COMPANY_SHARE_ID=company_share_id)
         )
@@ -1097,6 +1164,16 @@ class MeroShareBase(MeroShareCore):
             )
 
     def get_new_applied_ipo_details(self, application_form_id: int):
+        """
+        Gets details about the new IPOs that is currently applied.
+
+        Args:
+            application_form_id: Application form id, must have been returned from same method
+
+        Returns:
+            # TODO: SOMEONE UPDATE PLEASE !!
+
+        """
         resp = self.get(
             self.ABSA_APPLIED_IPO_DETAIL_VIEW_URL.format(APPLICATION_FORM_ID=application_form_id)
         )
@@ -1110,6 +1187,16 @@ class MeroShareBase(MeroShareCore):
             )
 
     def get_old_applied_ipo_details(self, application_form_id: int):
+        """
+        Gets details about the old IPOs that is currently applied.
+
+        Args:
+            application_form_id: Application form id, must have been returned from same method
+
+        Returns:
+            # TODO: SOMEONE UPDATE PLEASE !!
+
+        """
         resp = self.get(
             self.ABSA_OLD_APPLIED_IPO_DETAIL_VIEW_URL.format(APPLICATION_FORM_ID=application_form_id)
         )
@@ -1123,6 +1210,16 @@ class MeroShareBase(MeroShareCore):
             )
 
     def get_applied_ipo_details(self, application_form_id: int):
+        """
+        Gets details of the applied IPOs.
+
+        Args:
+            application_form_id: Application form id, must have been returned from same method
+
+        Returns:
+            # TODO: SOMEONE UPDATE PLEASE !!
+
+        """
         try:
             return self.get_new_applied_ipo_details(application_form_id)
         except MeroshareDataLoadError:
@@ -1132,6 +1229,16 @@ class MeroShareBase(MeroShareCore):
 
     # ==================CHANGING ACCOUNT DETAILS=================
     def change_password(self, new_password: str):
+        """
+        Change password of meroshare account, but won't automatically update it in .env
+
+        Args:
+            new_password: New password to set.
+
+        Returns:
+            Response from change password api.
+
+        """
         resp = self.post(
             self.PASSWORD_CHANGE_POST_URL,
             json={
@@ -1151,6 +1258,17 @@ class MeroShareBase(MeroShareCore):
             )
 
     def change_pin(self, new_pin: int):
+        """
+             Change pin of meroshare account, but won't automatically update it in .env
+
+             Args:
+                 new_pin: New pin to set.
+
+             Returns:
+                 Response from change pin api.
+
+         """
+
         resp = self.post(
             self.PIN_CHANGE_POST_URL,
             json={
@@ -1176,6 +1294,19 @@ class MeroShareBase(MeroShareCore):
             self, start_date: datetime.date, end_date: datetime.date, result_size: int = 200,
             page: int = 1
     ):
+        """
+        Gets logs about user activity from meroshare.
+
+        Args:
+            start_date: logs filter, start date
+            end_date: logs filter, end date
+            result_size: number of details to show in result
+            page: page of the data
+
+        Returns:
+            # TODO: SOMEONE UPDATE PLEASE !!
+
+        """
         start_date = start_date.strftime("%Y-%m-%d")
         end_date = end_date.strftime("%Y-%m-%d")
 
@@ -1216,6 +1347,19 @@ class MeroShareBase(MeroShareCore):
             size: int = 200,
             sort_asc: bool = True
     ) -> list[dict]:
+        """
+        Gets all the shares that you have.
+
+        Args:
+            sort_by: weird parameter choice in API, leave it as default
+            page: page to display
+            size: number of data per page
+            sort_asc: bool value to sort data as ascending.
+
+        Returns:
+            # TODO: SOMEONE UPDATE PLEASE !!
+
+        """
         resp = self.post(
             self.MY_SHARES_URL,
             json={
@@ -1352,6 +1496,7 @@ class MeroShareBase(MeroShareCore):
 
     # ===================GETTING IPO RESULTS==================
     def get_ipo_result_company_list(self):
+
         resp = self.get(self.IPO_RESULT_COMPANY_LIST_URL)
 
         if resp.ok:
@@ -1363,6 +1508,16 @@ class MeroShareBase(MeroShareCore):
             )
 
     def get_ipo_result(self, company_share_id: int) -> dict:
+        """
+        Gets the IPO result
+
+        Args:
+            company_share_id: Company share ID from data gained by `get_ipo_result_company_list`
+
+        Returns:
+            # TODO: SOMEONE UPDATE PLEASE !!
+
+        """
         resp = requests.post(
             self.IPO_RESULT_CHECK_URL,
             json={
