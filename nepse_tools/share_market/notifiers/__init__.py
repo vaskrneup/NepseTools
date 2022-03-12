@@ -1,5 +1,7 @@
+import datetime
 import smtplib
 
+from nepse_tools.scraper.price_scraper import PriceScraper
 from nepse_tools.share_market.notifiers.base_notifier import BaseNotifier
 from nepse_tools.share_market.notifiers.ma_cross_notifier import MACrossNotifier
 from nepse_tools.utils.notification_mediums.email import EmailManager
@@ -23,14 +25,23 @@ class BulkNotifier:
                     self._messages[email] = []
 
     def run(self):
+        today_share_price = PriceScraper().parse_share_price(
+            date=datetime.datetime.now().date()
+        )
+
+        notifier_outputs = []
+
         for notifier in self.notifiers:
-            notifier_output = notifier.run(send_email=False)
+            notifier_output = notifier.run(send_email=False, today_share_price=today_share_price)
+            notifier_outputs.append(notifier_output)
 
             if notifier_output is not None:
                 for email in notifier.notification_emails:
                     self._messages[email].append(notifier_output)
 
         self.send_email()
+
+        return notifier_outputs
 
     def send_email(self):
         with smtplib.SMTP_SSL(
