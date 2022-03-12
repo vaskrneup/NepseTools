@@ -24,7 +24,7 @@ class BaseNotifier:
             template = jinja2.Template(template_file.read())
             template.render(**template_data)
 
-    def process_data(self, email: str = None, *args, **kwargs) -> dict | None:
+    def process_data(self, email: str = None, today_share_price: dict = None, *args, **kwargs) -> dict | None:
         raise NotImplementedError()
 
     def send_email(
@@ -43,12 +43,12 @@ class BaseNotifier:
             attachment_file_paths=attachment_file_paths
         )
 
-    def run(self, send_email: bool = True, has_dynamic_user_content: bool = False) -> None | dict:
+    def run(self, send_email: bool = True, has_dynamic_user_content: bool = False, *args, **kwargs) -> None | dict:
         if has_dynamic_user_content:
             dynamic_message_dict = {}
 
             for email in self.notification_emails:
-                processed_data = self.process_data(email)
+                processed_data = self.process_data(email, *args, **kwargs)
 
                 if processed_data is None:
                     return None
@@ -60,7 +60,7 @@ class BaseNotifier:
 
             return dynamic_message_dict
         else:
-            processed_data = self.process_data()
+            processed_data = self.process_data(*args, **kwargs)
 
             if processed_data is None:
                 return None
