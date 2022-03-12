@@ -29,7 +29,7 @@ class MA(BaseIndicator):
         self.ma_value_key_name = ma_value_key_name
 
         if self.company_symbol is not None:
-            self.filters.append(lambda data: data[data[self.DATA_COLUMNS.symbol] == self.company_symbol])
+            self.filters = [lambda data: data[data[self.DATA_COLUMNS.symbol] == self.company_symbol], *self.filters]
 
     def process_data(self) -> list:
         column_data = self.DATA_COLUMNS.get_col_from_df(
@@ -37,12 +37,13 @@ class MA(BaseIndicator):
             col=self.output_columns
         )
 
+        start_point = 0
+        end_point = 0
+
         if len(column_data[0]) < self.ma_value + 1:
             return []
 
         new_data = []
-        start_point = 0
-        end_point = 0
 
         while end_point < len(column_data[0]):
             end_point = start_point + self.ma_value
