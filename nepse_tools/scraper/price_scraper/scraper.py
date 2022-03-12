@@ -1,8 +1,10 @@
 import datetime
 from typing import Any
 
+import pandas as pd
 import requests
 from bs4 import BeautifulSoup
+from decouple import config
 
 from nepse_tools.utils.logger import logger
 
@@ -17,7 +19,13 @@ class PriceScraper:
         self.share_price_keys = []
         self.share_price_keys_set = set()
 
+        self.share_price_df: None | pd.DataFrame = None
+
         self.reset_session()
+
+    def load_share_price_df_if_required(self):
+        if self.share_price_df is None:
+            self.share_price_df = pd.read_csv(config("SHARE_PRICE_STORAGE_LOCATION"))
 
     def reset_session(self):
         self.session = requests.Session()
@@ -37,7 +45,7 @@ class PriceScraper:
     def convert_to_int(text: str):
         try:
             return int(text)
-        except ValueError:
+        except (ValueError, TypeError):
             return 0
 
     @staticmethod
@@ -153,3 +161,9 @@ class PriceScraper:
                     parsed_data[key].append(None)
 
         return parsed_data
+
+    def get_all_company_symbol(self, n: int = 1000):
+        from nepse_tools.share_market.indicators.base_indicator import DataColumns
+
+        self.load_share_price_df_if_required()
+        return list(set(self.share_price_df[DataColumns.symbol].tail(n).to_list()))
