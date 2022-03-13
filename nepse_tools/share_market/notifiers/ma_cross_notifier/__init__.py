@@ -4,7 +4,7 @@ import secrets
 
 import pandas as pd
 
-from nepse_tools.scraper.price_scraper import PriceScraper
+from nepse_tools.scraper.price_scraper.scraper import PriceScraper
 from nepse_tools.share_market.indicators.moving_average import MA
 from nepse_tools.share_market.notifiers.base_notifier import BaseNotifier
 

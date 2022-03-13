@@ -1,3 +1,13 @@
+"""
+Price scraper using sharesansar, you can create
+
+Contribution:
+    You can upgrade the scrapers, make them more efficient or add new functionality.
+
+Notes:
+    * Please create and run tests, if you update anything.
+"""
+
 import datetime
 from typing import Any
 
@@ -10,6 +20,10 @@ from nepse_tools.utils.logger import logger
 
 
 class PriceScraper:
+    """
+    Share Price scraper using `sharesansar`.
+    Additionally, it provides number of different companies.
+    """
     DEFAULT_HTML_PARSER = "lxml"
 
     def __init__(self):

@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 from decouple import config
 
-from nepse_tools.scraper.price_scraper import PriceScraper
+from nepse_tools.scraper.price_scraper.scraper import PriceScraper
 
 
 class DataColumns:
@@ -165,7 +165,7 @@ class BaseIndicator:
             data = pd.read_csv(csv_file_path)
         else:
             data = csv_file_path
-            
+
         kwargs.setdefault(
             "share_prices",
             data

@@ -1,7 +1,7 @@
 import datetime
 import smtplib
 
-from nepse_tools.scraper.price_scraper import PriceScraper
+from nepse_tools.scraper.price_scraper.scraper import PriceScraper
 from nepse_tools.share_market.notifiers.base_notifier import BaseNotifier
 from nepse_tools.share_market.notifiers.ma_cross_notifier import MACrossNotifier
 from nepse_tools.utils.notification_mediums.email import EmailManager
