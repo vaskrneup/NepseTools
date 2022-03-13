@@ -1,0 +1,14 @@
+<hr>
+{% for i in range(len(messages)) %}
+    <h3 style="color: black; font-weight: 900; text-align: center">
+        {{ messages[i]["symbol"] }} IS {{ messages[i]["state"] }}
+    </h3>
+    <img
+            src="cid:{{ messages[i]["attachment_file_path"] }}"
+            alt="Stock Price Graph"
+            width="500px"
+            height="auto"
+    >
+    <hr>
+{% endfor %}
+<hr>
