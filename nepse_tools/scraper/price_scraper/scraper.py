@@ -110,23 +110,34 @@ class PriceScraper:
         self.update_token(main_page_soup)
 
     def get_price_html(self, date: datetime.date):
-        resp = self.session.post(
-            "https://www.sharesansar.com/ajaxtodayshareprice",
-            data={
-                "_token": self.token,
-                "sector": "all_sec",
-                "date": self.get_formatted_date_from_date(date)
-            },
-            headers={
-                **self.session.headers,
-                "x-requested-with": "XMLHttpRequest"
-            }
-        )
+        if datetime.datetime.now().date() == date:
+            resp = self.session.get(
+                "https://www.sharesansar.com/today-share-price",
+                headers=self.session.headers
+            )
+        else:
+            resp = self.session.post(
+                "https://www.sharesansar.com/ajaxtodayshareprice",
+                data={
+                    "_token": self.token,
+                    "sector": "all_sec",
+                    "date": self.get_formatted_date_from_date(date)
+                },
+                headers={
+                    **self.session.headers,
+                    "x-requested-with": "XMLHttpRequest"
+                }
+            )
         return resp.text
 
     def parse_share_price(self, date: datetime.date) -> dict | None:
         soup = BeautifulSoup(self.get_price_html(date), self.DEFAULT_HTML_PARSER)
-        date_text = soup.select("h5 span.text-org")
+
+        if datetime.datetime.now().date() == date:
+            date_text = self.get_formatted_date_from_date(date)
+        else:
+            date_text = soup.select("h5 span.text-org")
+            date_text = date_text and date_text[0].text.strip()
 
         current_keys = [
             "date", "time",
@@ -142,7 +153,7 @@ class PriceScraper:
 
         for tr in soup.select("tbody tr"):
             parsed_price_data = [
-                date_text and date_text[0].text.strip(),
+                date_text,
                 "00:00:00",
                 *(
                     self.convert_datatype(data.text.strip().replace(",", ""))

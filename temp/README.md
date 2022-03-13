@@ -1,0 +1,1 @@
+## Stores Temporary files created by the script.
