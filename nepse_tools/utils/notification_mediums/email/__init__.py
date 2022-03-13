@@ -1,3 +1,7 @@
+"""
+Module to provide initial functionality for sending emails.
+"""
+
 import os
 import smtplib
 import ssl
@@ -10,6 +14,10 @@ from decouple import config
 
 
 class EmailManager:
+    """
+    Base Class to provide basic emailing functionality.
+    """
+
     def __init__(self):
         self._sender_email: str = config("MAIL_EMAIL")
         self._mail_password: str = config("MAIL_PASSWORD")
@@ -26,6 +34,20 @@ class EmailManager:
             receiver_emails: list[str],
             attachment_file_paths: list[str] = None,
     ) -> dict:
+        """
+        Provides a dictionary of parameters accepted by `EmailManager.send_email` method.
+
+        Args:
+            subject: Subject of the mail
+            plain_message: Plain Text form of email body
+            html_message: HTML form of email body
+            receiver_emails: List of emails of the receivers'
+            attachment_file_paths: File paths to the email file attachments
+
+        Returns:
+            Dictionary that is accepted by `EmailManager.send_email` method.
+
+        """
         return {
             "subject": subject,
             "plain_message": plain_message,
@@ -35,7 +57,18 @@ class EmailManager:
         }
 
     @staticmethod
-    def attach_documents_to_email(message: MIMEMultipart, attachment_file_paths: list[str]):
+    def attach_documents_to_email(message: MIMEMultipart, attachment_file_paths: list[str]) -> None:
+        """
+        Attaches the files provided to the message.
+
+        Args:
+            message: Message Object to which the files must be attached
+            attachment_file_paths: Paths to the file which must be attached to the message
+
+        Returns:
+            None
+
+        """
         for attachment_file_path in attachment_file_paths:
             with open(attachment_file_path, "rb") as attachment:
                 part = MIMEBase("application", "octet-stream")
@@ -60,7 +93,22 @@ class EmailManager:
             html_message: str = None,
             attachment_file_paths: list[str] = None,
             server: smtplib.SMTP_SSL = None,
-    ):
+    ) -> None:
+        """
+        Internal method to send email.
+
+        Args:
+            subject: Subject of the mail
+            plain_message: Plain Text form of email body
+            html_message: HTML form of email body
+            receiver_email: List of emails of the receivers'
+            attachment_file_paths: File paths to the email file attachments
+            server: Server|Connection that will be used to send email
+
+        Returns:
+            None
+
+        """
         server.login(self._sender_email, self._mail_password)
 
         message = MIMEMultipart("alternative")
@@ -90,6 +138,21 @@ class EmailManager:
             attachment_file_paths: list[str] = None,
             server: smtplib.SMTP_SSL = None
     ) -> bool:
+        """
+        Sends email using given parameters.
+
+        Args:
+            subject: Subject of the mail
+            plain_message: Plain Text form of email body
+            html_message: HTML form of email body
+            receiver_email: List of emails of the receivers'
+            attachment_file_paths: File paths to the email file attachments
+            server: Server|Connection that will be used to send email
+
+        Returns:
+            None
+
+        """
         if type(receiver_email) is str:
             receiver_email = [receiver_email]
 
