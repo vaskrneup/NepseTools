@@ -51,10 +51,16 @@ class BulkNotifier:
         ) as server:
             for email, email_data in self._messages.items():
                 if email_data:
+                    file_attachments = []
+
+                    for data in email_data:
+                        file_attachments += data["attachment_file_paths"]
+
                     self.email_manager.send_email(
                         subject=" || ".join([data["subject"] for data in email_data]),
                         plain_message="\n\n".join(data["plain_message"] for data in email_data),
                         html_message="<hr><hr>".join(data["html_message"] for data in email_data),
                         receiver_email=email,
-                        server=server
+                        server=server,
+                        attachment_file_paths=file_attachments
                     )

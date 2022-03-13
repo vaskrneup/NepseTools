@@ -46,6 +46,10 @@ class EmailManager:
                 "Content-Disposition",
                 f"attachment; filename= {os.path.basename(attachment_file_path)}",
             )
+            part.add_header(
+                "Content-ID",
+                f'<{os.path.basename(attachment_file_path).replace(".", "_").strip()}>'
+            )
             message.attach(part)
 
     def _send_email(
