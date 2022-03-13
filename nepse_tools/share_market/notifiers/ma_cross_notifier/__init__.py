@@ -1,4 +1,6 @@
 import datetime
+import os
+import secrets
 
 import pandas as pd
 
@@ -93,20 +95,60 @@ class MACrossNotifier(BaseNotifier):
             ])
 
         i = -1
+        messages = []
+        plot_figures = []
 
         for prev_ma_data, current_ma_data in zip(prev_ma, current_ma):
             i += 1
+            state = None
 
             if None in {*prev_ma_data, *current_ma_data}:
                 continue
 
             if prev_ma_data[0] < prev_ma_data[1] and current_ma_data[0] > current_ma_data[1]:
-                print(self.scripts[i], "DECREASING")
+                state = "DECREASING -- According to [20, 5] MA value."
+                print(self.scripts[i], "DECREASING", f"|| {prev_ma_data=} || {current_ma_data=}")
             elif prev_ma_data[0] > prev_ma_data[1] and current_ma_data[0] < current_ma_data[1]:
-                print(self.scripts[i], "INCREASING")
-            else:
-                pass
+                print(self.scripts[i], "INCREASING", f"|| {prev_ma_data=} || {current_ma_data=}")
+                state = "INCREASING -- According to [20, 5] MA value."
 
-        # return self.email_manager.get_send_mail_kwargs(
-        #     subject=""
-        # )
+            if state is not None:
+                scrip_plot_path = f"temp/{self.scripts[i]}_{secrets.token_hex(8)}.jpg"
+
+                fig, _, plt = MA.plot_graph(
+                    [[20], [5]],
+                    company_symbol=self.scripts[i],
+                    csv_file_path=self.share_price_df,
+                    filters=[
+                        lambda data: data.tail(200)
+                    ]
+                )
+
+                fig.set_size_inches(26, 13)
+                fig.savefig(scrip_plot_path, format="jpg")
+
+                messages.append({
+                    "symbol": self.scripts[i],
+                    "state": state,
+                    "attachment_file_path": os.path.basename(scrip_plot_path).replace(".", "_").strip()
+                })
+                plot_figures.append(scrip_plot_path)
+
+                template_data = {
+                    "messages": messages,
+                    "len": len
+                }
+
+        return self.email_manager.get_send_mail_kwargs(
+            subject="NEPSE MA NOTIFICATION",
+            receiver_emails=self.notification_emails,
+            html_message=self.create_message_from_template(
+                template_path="templates/share_notification/share_price_change_indicator.html",
+                template_data=template_data
+            ),
+            plain_message=self.create_message_from_template(
+                template_path="templates/share_notification/share_price_change_indicator_raw.html",
+                template_data=template_data
+            ),
+            attachment_file_paths=plot_figures
+        )
