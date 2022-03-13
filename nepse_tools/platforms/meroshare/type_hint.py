@@ -1,3 +1,10 @@
+"""
+Contains typehint for meroshare package.
+
+Contribution:
+    If you need to create any typehint that will be primarily used in meroshare then, it must go here.
+"""
+
 import typing
 
 

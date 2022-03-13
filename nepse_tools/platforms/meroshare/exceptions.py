@@ -1,3 +1,10 @@
+"""
+All Exceptions thrown by Meroshare
+
+Contribution:
+    You can add as many new Exceptions as you want, but make sure they inherit from `MeroshareBaseException`
+"""
+
 from nepse_tools.exceptions import NepseToolsBaseException
 
 

@@ -4,6 +4,7 @@ from any of the classes below, or write a mixin to merge with your class.
 """
 
 import datetime
+import typing
 import warnings
 from typing import List, Optional
 
@@ -163,7 +164,7 @@ class MeroShareCore(PlatformManager, SessionManager):
         self.is_logged_in = False
         # print(self.bank_detail_view_data[''])
 
-    def hard__load_all_data(self):
+    def hard__load_all_data(self) -> typing.Any:
         """
         Reloads and caches all data from various All API Endpoint.
 
@@ -516,11 +517,25 @@ class MeroShareCore(PlatformManager, SessionManager):
 
     @property
     def current_share_holdings_symbols_lazy(self) -> List[str]:
+        """
+        Gets symbols of the companies that you currently have.
+
+        Returns:
+            List of symbol of all the company that you have
+
+        """
         self.load_current_share_holdings_symbols_if_required()
         return self.current_share_holdings_symbols
 
     @property
     def bank_id_from_bank_list_view(self) -> int:
+        """
+        Gets bank ID from bank List View
+
+        Returns:
+            Bank ID as Number
+
+        """
         self.load_bank_list_view_if_required()
         return self.bank_list_view_data.get("id")
 

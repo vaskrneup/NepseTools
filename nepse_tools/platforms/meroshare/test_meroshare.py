@@ -1,5 +1,9 @@
 """
 Test cases for meroshare api Class.
+
+Contribution:
+    Any new methods added or any changes made to `nepse_tools.platforms.meroshare.api`
+    must be tested and new test cases must be created before submitting PR.
 """
 
 from decouple import config
@@ -9,6 +13,9 @@ from nepse_tools.utils.data_loader import load_test_data
 
 
 class TestMeroshare:
+    """
+    Base test class for Meroshare
+    """
     ms = MeroShare(
         dp=config("MEROSHARE_DP"),
         username=config("MEROSHARE_USERNAME"),

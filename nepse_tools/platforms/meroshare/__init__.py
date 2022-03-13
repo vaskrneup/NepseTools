@@ -1,7 +1,4 @@
 """
-[UNDER DEVELOPMENT]
-----------------------------------------------------
-
 Helper functions and classes to do various thing in meroshare.
-See `api.py` for all supported features.
+See `nepse_tools.platforms.meroshare.api` for all supported features.
 """
