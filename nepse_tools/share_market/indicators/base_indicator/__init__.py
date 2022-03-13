@@ -156,9 +156,16 @@ class BaseIndicator:
 
     @classmethod
     def create_indicator_from_csv_file(
-            cls, *, csv_file_path: str = config("SHARE_PRICE_STORAGE_LOCATION"), **kwargs
+            cls,
+            *,
+            csv_file_path: str | pd.DataFrame = config("SHARE_PRICE_STORAGE_LOCATION"),
+            **kwargs
     ):
-        data = pd.read_csv(csv_file_path)
+        if type(csv_file_path) is str:
+            data = pd.read_csv(csv_file_path)
+        else:
+            data = csv_file_path
+            
         kwargs.setdefault(
             "share_prices",
             data
