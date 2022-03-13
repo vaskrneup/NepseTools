@@ -22,7 +22,7 @@ class BaseNotifier:
     def create_message_from_template(template_path: str, template_data: dict):
         with open(template_path, "r") as template_file:
             template = jinja2.Template(template_file.read())
-            template.render(**template_data)
+            return template.render(**template_data)
 
     def process_data(self, email: str = None, today_share_price: dict = None, *args, **kwargs) -> dict | None:
         raise NotImplementedError()
@@ -50,7 +50,7 @@ class BaseNotifier:
             for email in self.notification_emails:
                 processed_data = self.process_data(email, *args, **kwargs)
 
-                if processed_data is None:
+                if not processed_data:
                     return None
 
                 if send_email:
@@ -62,7 +62,7 @@ class BaseNotifier:
         else:
             processed_data = self.process_data(*args, **kwargs)
 
-            if processed_data is None:
+            if not processed_data:
                 return None
 
             if send_email:

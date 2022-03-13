@@ -69,16 +69,18 @@ class MA(BaseIndicator):
         return new_data
 
     @staticmethod
-    def plot_graph(mas_from: list[list[int]], company_symbol: str):
+    def plot_graph(mas_from: list[list[int]], company_symbol: str, **kwargs):
         ma_classes = [
             MA.create_indicator_from_csv_file(
-                ma_value=ma[0], company_symbol=company_symbol,
+                ma_value=ma[0],
+                company_symbol=company_symbol,
                 output_columns=[
                     MA.DATA_COLUMNS.symbol,
                     MA.DATA_COLUMNS.date,
                     MA.DATA_COLUMNS.close,
                     MA.DATA_COLUMNS.vol
-                ]
+                ],
+                **kwargs
             ) for ma in mas_from
         ]
         first = True
