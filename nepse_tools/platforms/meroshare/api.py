@@ -238,7 +238,7 @@ class MeroShareCore(PlatformManager, SessionManager):
 
     def load_current_share_holdings_symbols_if_required(self) -> None:
         """
-        calls `MeroShareCore.current_share_holdings_symbols` if data is not already fetched.
+        calls `api.MeroShareCore.current_share_holdings_symbols` if data is not already fetched.
 
         Returns:
             None

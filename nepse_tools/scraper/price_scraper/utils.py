@@ -1,13 +1,38 @@
+"""
+Contains utility function or classes related to price scraping.
+
+Contribution:
+    You can add any number of new utilities function, or make current ones more efficient.
+"""
+
+import datetime
 import os.path
 from typing import Iterable
 from nepse_tools.scraper.price_scraper.scraper import PriceScraper
 
 import pandas as pd
 from decouple import config
+
+from nepse_tools.utils.generators.date_generator import date_range
 from nepse_tools.utils.logger import logger
 
 
-def save_data_to_csv(date_generator: Iterable | None = None, csv_path: str = config("SHARE_PRICE_STORAGE_LOCATION")):
+def save_data_to_csv(
+        date_generator: Iterable[datetime.date] | None = None,
+        csv_path: str = config("SHARE_PRICE_STORAGE_LOCATION")
+) -> None:
+    """
+    Scrapes data for the given date range or from last date in scraped data csv file.
+
+    Args:
+        date_generator: Any iterable object that returns a list of date
+        csv_path: Path to the csv file containing the scraped data, if not given default will be used
+
+    Returns:
+        None
+
+    """
+
     from nepse_tools.share_market.indicators.base_indicator import DataColumns
 
     price_scraper = PriceScraper()

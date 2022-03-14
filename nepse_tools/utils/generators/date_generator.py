@@ -1,7 +1,23 @@
 import datetime
+from typing import Generator
 
 
-def date_range(start: str | datetime.date, end: str | datetime.date = datetime.datetime.now().date()):
+def date_range(
+        start: str | datetime.date,
+        end: str | datetime.date = datetime.datetime.now().date()
+) -> Generator[datetime.date, None, None]:
+    """
+    Generates range of `datetime.date` objects from start to end.
+
+    Args:
+        start: Date starts from
+        end: Date ends one day before
+
+    Returns:
+        Generates list of `datetime.date` objects between given dates
+
+    """
+
     start_datetime = start
     end_datetime = end
     time_delta = datetime.timedelta(days=1)
